@@ -11,6 +11,14 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/admin', function () {
+    return 'Welcome Admin';
 });
+
+Route::get('/{path?}', [
+    'uses' => 'ReactController@show',
+    'as' => 'react',
+    'where' => ['path' => '.*']
+]);
+
+// Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
