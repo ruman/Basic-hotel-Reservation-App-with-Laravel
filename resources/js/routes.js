@@ -1,6 +1,7 @@
 
 // core components/views for Admin layout
 import Frontend from "views/Frontend/Frontend";
+import Login from "views/Auth/Login";
 
 const dashboardRoutes = [
   /*{
@@ -21,7 +22,7 @@ const dashboardRoutes = [
   {
     path: "/login",
     name: "login",
-    component: Frontend,
+    component: Login,
     showOnDashboard: true,
     layout: "/Frontend"
   }

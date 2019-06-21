@@ -36,4 +36,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static $roles = [
+        'email'    => 'required|email', // make sure the email is an actual email
+        'password' => 'required|alphaNum|min:3'
+    ];
 }

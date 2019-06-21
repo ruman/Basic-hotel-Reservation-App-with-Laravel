@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Http\Request;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,8 +14,35 @@
 |
 */
 
+
+Auth::routes(['register' => false]);
+
 Route::get('/admin', function () {
-    return 'Welcome Admin';
+    return redirect('/login');
+});
+
+
+Route::group(['middleware' => ['auth']], function () {
+	Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
+		Route::get('dashboard', 'HomeController@index')->name('dashboard');
+
+		Route::get('hotels', 'HotelController@index')->name('hotels');
+		Route::get('hotels/{id}/edit', 'HotelController@edit')->name('hotel.edit');
+		Route::get('hotels/{id}/preview', 'HotelController@show')->name('hotel.show');
+		Route::post('hotels/delete/{id}', 'HotelController@destroy');
+		Route::post('hotels/{id}', 'HotelController@update');
+		Route::post('hotels/store', 'HotelController@store');
+
+		Route::get('rooms', 'RoomsController@index')->name('rooms');
+		Route::get('rooms/{id}/edit', 'RoomsController@edit')->name('room.edit');
+		Route::get('rooms/{id}/preview', 'RoomsController@show')->name('room.show');
+		Route::post('rooms/delete/{id}', 'RoomsController@destroy');
+		Route::post('rooms/{id}', 'RoomsController@update');
+		Route::post('rooms/store', 'RoomsController@store');
+
+		Route::resource('roomcapacity', 'RoomCapacityController', ['except' => ['show']]);
+		Route::resource('roomtypes', 'RoomTypesController', ['except' => ['show']]);
+	});
 });
 
 Route::get('/{path?}', [
