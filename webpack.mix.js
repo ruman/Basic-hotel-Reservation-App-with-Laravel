@@ -17,6 +17,11 @@ mix.react('resources/js/app.js', 'public/js')
 mix.scripts([
     'resources/js/admin/jquery.min.js',
     'resources/js/admin/bootstrap.min.js',
+    'resources/js/admin/jquery.dataTables.min.js',
+    'resources/js/admin/dataTables.bootstrap4.min.js',
     'resources/js/admin/app.js',
 ], 'public/js/admin.js')
+	.scripts([
+		'resources/js/admin/jsrender.min.js'
+], 'public/js/plugins.js')
 	.sass('resources/sass/admin.scss', 'public/css')

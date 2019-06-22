@@ -9,15 +9,15 @@
 
     <title>{{ config('app.name', 'Hotel Booking Manager') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/admin.js') }}" defer></script>
-
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
     <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
+    <style type="text/css">
+        @yield('inlinestyle')
+    </style>
 </head>
 <body>
     <div id="app">
@@ -77,5 +77,22 @@
         </main>
 
     </div>
+    <footer style="height:40px;display: block"></footer>
+
+    @yield('pageFooter')
+    
+    <!-- Scripts -->
+    <script src="{{ asset('js/admin.js') }}"></script>
+
+    @yield('js')
+
+    <script type="text/javascript">
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        @yield('pageScript') 
+    </script>
 </body>
 </html>

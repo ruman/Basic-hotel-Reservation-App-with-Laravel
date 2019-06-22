@@ -1,6 +1,6 @@
 @extends('admin.layouts.main')
 
-@section('title')Manage Room Types
+@section('title')Manage Room Capacity
 @endsection
 
 @section('inlinestyle')
@@ -25,15 +25,15 @@
 
     <div class="row justify-content-center">
         <div class="col-md-8">
-            @if ($room_types->isEmpty())
+            @if ($room_capacities->isEmpty())
                 <div class="card">
                     <div class="card-header">
-                        <div class="float-left"><h4>Room Types</h4></div>
+                        <div class="float-left"><h4>Room Capacities</h4></div>
                         <div class="float-right">
-                            <button type="button" class="btn btn-success btn-small" data-toggle="modal" data-target="#createRommType"> + Add New Room Type </button>
+                            <button type="button" class="btn btn-success btn-small" data-toggle="modal" data-target="#createRommType"> + Add New Room Capacity </button>
                         </div>
                     </div>
-                    <div class="card-body"><div class="emptyMessage">No Room Type found.</div>
+                    <div class="card-body"><div class="emptyMessage">No Room Capacity found.</div>
                         <table id="listTable" class="table table-striped">
                             <tbody>
                             </tbody>
@@ -43,21 +43,21 @@
             @else
             <div class="card">
                 <div class="card-header">
-                    <div class="float-left"><h4>Room Types</h4></div>
+                    <div class="float-left"><h4>Room Capacities</h4></div>
                     <div class="float-right">
-                        <button type="button" class="btn btn-success btn-small" data-toggle="modal" data-target="#createRommType"> + Add New Room Type </button>
+                        <button type="button" class="btn btn-success btn-small" data-toggle="modal" data-target="#createRommType"> + Add New Room Capacity </button>
                     </div>
                 </div>
                 <div class="card-body">
                     <table id="listTable" class="table table-striped">
                         <tbody>
-                            @foreach($room_types as $room_type)
+                            @foreach($room_capacities as $room_capacity)
                                 <tr class="editrow">
                                     <td colspan="10" class="editarea">
-                                        <div class="editresponse">{{ $room_type->name }}</div>
+                                        <div class="editresponse">{{ $room_capacity->name }}</div>
                                         <div class="editform">
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control edit-field" name="name" data-id="{{$room_type->id}}" value="{{$room_type->name}}" />
+                                                <input type="text" class="form-control edit-field" name="name" data-id="{{$room_capacity->id}}" value="{{$room_capacity->name}}" />
                                                 <div class="input-group-append">
                                                     <button class="btn btn-outline-secondary editinlinesubmit" type="button">Save</button>
                                                 </div>
@@ -66,7 +66,7 @@
                                     </td>
                                     <td>
                                         <div class="clearfix">
-                                            <button type="button" class="btn btn-danger btn-sm deleteEntry float-right" data-id="{{$room_type->id}}">Delete</button>
+                                            <button type="button" class="btn btn-danger btn-sm deleteEntry float-right" data-id="{{$room_capacity->id}}">Delete</button>
                                             <button type="button" class="btn btn-primary btn-sm editinline float-right">Edit</button>
                                         </div>
                                     </td>
@@ -81,7 +81,7 @@
 
     <div class="row">
         <div class="col-md-12 text-center">
-            {!! $room_types; !!}
+            {!! $room_capacities; !!}
         </div>
     </div>
 
@@ -93,7 +93,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add New Room Type</h5>
+                <h5 class="modal-title">Add New Room Capacity</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -129,7 +129,7 @@
             }
         jQuery.ajax({
             type:'PUT',
-            url: '/admin/roomtypes/'+field.data('id'),
+            url: '/admin/roomcapacity/'+field.data('id'),
             data:data,
             beforeSend: function(){
                 v.addClass('submitting');
@@ -156,7 +156,7 @@
         if(confirm('Are you sure?')){
             jQuery.ajax({
                 type:'DELETE',
-                url: '/admin/roomtypes/'+v.data('id'),
+                url: '/admin/roomcapacity/'+v.data('id'),
                 beforeSend: function(){
                     v.closest('.editrow').addClass('deleting');
                 },
@@ -187,7 +187,7 @@
         }
         jQuery.ajax({
             type:'POST',
-            url: '/admin/roomtypes',
+            url: '/admin/roomcapacity',
             data:data,
             beforeSend: function(){
                 v.addClass('submitting');
@@ -213,8 +213,8 @@
                         '</td>'+
                         '<td>'+
                             '<div class="clearfix">'+
-                                '<button type="button" class="btn btn-primary btn-sm editinline float-right">Edit</button>&nbsp;&nbsp;'+
                                 '<button type="button" class="btn btn-danger btn-sm deleteEntry float-right" data-id="+data.id+">Delete</button>'+
+                                '<button type="button" class="btn btn-primary btn-sm editinline float-right">Edit</button>'+
                             '</div>'+
                         '</td>'+
                     '</tr>'+

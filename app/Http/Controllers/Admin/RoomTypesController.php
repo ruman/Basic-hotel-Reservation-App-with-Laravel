@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\RoomTypes;
 use Illuminate\Http\Request;
+use App\Http\Requests\RoomTypesRequest;
 use App\Http\Controllers\Controller;
 
 class RoomTypesController extends Controller
@@ -22,8 +23,9 @@ class RoomTypesController extends Controller
     }
 
 
-    public function index(Request $request)
+    public function index()
     {
+
         $room_types = $this->room_types->paginate($this->pagination);
         return view('admin.room_types.index')->with('room_types', $room_types);
     }
@@ -44,9 +46,14 @@ class RoomTypesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RoomTypesRequest $request)
     {
-        //
+        $payload = $request->except('_token');
+        $result = $this->room_types->create($payload);
+        return response()->json([
+            'success'   => true,
+            'data'   => $result
+        ]);
     }
 
     /**
@@ -78,9 +85,21 @@ class RoomTypesController extends Controller
      * @param  \App\RoomTypes  $roomTypes
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, RoomTypes $roomTypes)
+    public function update(RoomTypesRequest $request, $id)
     {
-        //
+        $payload = $request->except('_token');
+        $result = $this->room_types->find($id)->update($payload);
+        if($result){
+            return response()->json([
+                'success'=> true,
+                'data'   => $request->input('name')
+            ]);
+        }
+        
+        return response()->json([
+            'success'=> false,
+            'message'   => 'Failed to Update'
+        ]);
     }
 
     /**
@@ -89,8 +108,8 @@ class RoomTypesController extends Controller
      * @param  \App\RoomTypes  $roomTypes
      * @return \Illuminate\Http\Response
      */
-    public function destroy(RoomTypes $roomTypes)
+    public function destroy($id)
     {
-        //
+        return $this->room_types->destroy($id);
     }
 }

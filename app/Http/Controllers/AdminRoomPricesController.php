@@ -1,31 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\RoomPrices;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
-class RoomPricesController extends Controller
+class AdminRoomPricesController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public $pagination;
-
-    public function __construct(RoomPrices $room_prices)
-    {
-        $this->room_prices = $room_prices;
-        $this->pagination   = env('PAGINATION', 50);
-    }
-
     public function index()
     {
-        $room_prices = $this->room_prices->paginate($this->pagination);
-        $rooms = $this->room_prices->rooms();
-        return view('admin.room_prices.index')->with('room_prices', $room_prices);
+        //
     }
 
     /**

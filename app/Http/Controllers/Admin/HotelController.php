@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Hotels;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use PragmaRX\Countries\Package\Countries;
 
 class HotelController extends Controller
 {
@@ -25,7 +26,15 @@ class HotelController extends Controller
     public function index(Request $request)
     {
         $hotels = $this->hotels->paginate($this->pagination);
-        return view('admin.hotels.index')->with('hotels', $hotels);
+        $countries = Countries::all()->pluck('name.common', 'postal');
+        // $states = Countries::where('cca3', 'USA')->first()->hydrateStates()->states->pluck('name', 'postal');
+        // $cities = Countries::where('cca3', 'USA')->first()->hydrate('cities')->cities->where('adm1name', 'New York')->pluck('name');
+        // dd($cities);
+        // $all = $countries->all();
+        /*foreach ($cities as $city) {
+            echo $city['name'].'<br/><br/>';
+        }*/
+        return view('admin.hotels.index')->with(compact('hotels','countries'));
     }
 
     /**

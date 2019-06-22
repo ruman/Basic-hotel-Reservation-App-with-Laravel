@@ -63,6 +63,72 @@
         ]
     },
     {
+        "name": "colinodell/json5",
+        "version": "v1.0.5",
+        "version_normalized": "1.0.5.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/colinodell/json5.git",
+            "reference": "8c73e1a5cd933ed0e29fb5d5997f23902bd9804c"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/colinodell/json5/zipball/8c73e1a5cd933ed0e29fb5d5997f23902bd9804c",
+            "reference": "8c73e1a5cd933ed0e29fb5d5997f23902bd9804c",
+            "shasum": ""
+        },
+        "require": {
+            "ext-json": "*",
+            "ext-mbstring": "*",
+            "php": "^5.4.8|^7.0"
+        },
+        "require-dev": {
+            "mikehaertl/php-shellcommand": "^1.2.5",
+            "phpunit/phpunit": "^4.8.36|^7.3",
+            "squizlabs/php_codesniffer": "^2.3",
+            "symfony/finder": "^2.8|^3.4|^4.1"
+        },
+        "time": "2018-09-20T15:43:07+00:00",
+        "bin": [
+            "bin/json5"
+        ],
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "ColinODell\\Json5\\": "src"
+            },
+            "files": [
+                "src/global.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Colin O'Dell",
+                "email": "colinodell@gmail.com",
+                "homepage": "https://www.colinodell.com",
+                "role": "Developer"
+            }
+        ],
+        "description": "UTF-8 compatible JSON5 parser for PHP",
+        "homepage": "https://github.com/colinodell/json5",
+        "keywords": [
+            "JSON5",
+            "json",
+            "json5_decode",
+            "json_decode"
+        ]
+    },
+    {
         "name": "dnoegel/php-xdg-base-dir",
         "version": "0.1",
         "version_normalized": "0.1.0.0",
@@ -96,6 +162,243 @@
             "MIT"
         ],
         "description": "implementation of xdg base directory specification for php"
+    },
+    {
+        "name": "doctrine/cache",
+        "version": "v1.8.0",
+        "version_normalized": "1.8.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/doctrine/cache.git",
+            "reference": "d768d58baee9a4862ca783840eca1b9add7a7f57"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/doctrine/cache/zipball/d768d58baee9a4862ca783840eca1b9add7a7f57",
+            "reference": "d768d58baee9a4862ca783840eca1b9add7a7f57",
+            "shasum": ""
+        },
+        "require": {
+            "php": "~7.1"
+        },
+        "conflict": {
+            "doctrine/common": ">2.2,<2.4"
+        },
+        "require-dev": {
+            "alcaeus/mongo-php-adapter": "^1.1",
+            "doctrine/coding-standard": "^4.0",
+            "mongodb/mongodb": "^1.1",
+            "phpunit/phpunit": "^7.0",
+            "predis/predis": "~1.0"
+        },
+        "suggest": {
+            "alcaeus/mongo-php-adapter": "Required to use legacy MongoDB driver"
+        },
+        "time": "2018-08-21T18:01:43+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.8.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Doctrine\\Common\\Cache\\": "lib/Doctrine/Common/Cache"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Roman Borschel",
+                "email": "roman@code-factory.org"
+            },
+            {
+                "name": "Benjamin Eberlei",
+                "email": "kontakt@beberlei.de"
+            },
+            {
+                "name": "Guilherme Blanco",
+                "email": "guilhermeblanco@gmail.com"
+            },
+            {
+                "name": "Jonathan Wage",
+                "email": "jonwage@gmail.com"
+            },
+            {
+                "name": "Johannes Schmitt",
+                "email": "schmittjoh@gmail.com"
+            }
+        ],
+        "description": "Caching library offering an object-oriented API for many cache backends",
+        "homepage": "https://www.doctrine-project.org",
+        "keywords": [
+            "cache",
+            "caching"
+        ]
+    },
+    {
+        "name": "doctrine/dbal",
+        "version": "v2.9.2",
+        "version_normalized": "2.9.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/doctrine/dbal.git",
+            "reference": "22800bd651c1d8d2a9719e2a3dc46d5108ebfcc9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/doctrine/dbal/zipball/22800bd651c1d8d2a9719e2a3dc46d5108ebfcc9",
+            "reference": "22800bd651c1d8d2a9719e2a3dc46d5108ebfcc9",
+            "shasum": ""
+        },
+        "require": {
+            "doctrine/cache": "^1.0",
+            "doctrine/event-manager": "^1.0",
+            "ext-pdo": "*",
+            "php": "^7.1"
+        },
+        "require-dev": {
+            "doctrine/coding-standard": "^5.0",
+            "jetbrains/phpstorm-stubs": "^2018.1.2",
+            "phpstan/phpstan": "^0.10.1",
+            "phpunit/phpunit": "^7.4",
+            "symfony/console": "^2.0.5|^3.0|^4.0",
+            "symfony/phpunit-bridge": "^3.4.5|^4.0.5"
+        },
+        "suggest": {
+            "symfony/console": "For helpful console commands such as SQL execution and import of files."
+        },
+        "time": "2018-12-31T03:27:51+00:00",
+        "bin": [
+            "bin/doctrine-dbal"
+        ],
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.9.x-dev",
+                "dev-develop": "3.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Doctrine\\DBAL\\": "lib/Doctrine/DBAL"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Roman Borschel",
+                "email": "roman@code-factory.org"
+            },
+            {
+                "name": "Benjamin Eberlei",
+                "email": "kontakt@beberlei.de"
+            },
+            {
+                "name": "Guilherme Blanco",
+                "email": "guilhermeblanco@gmail.com"
+            },
+            {
+                "name": "Jonathan Wage",
+                "email": "jonwage@gmail.com"
+            }
+        ],
+        "description": "Powerful PHP database abstraction layer (DBAL) with many features for database schema introspection and management.",
+        "homepage": "https://www.doctrine-project.org/projects/dbal.html",
+        "keywords": [
+            "abstraction",
+            "database",
+            "dbal",
+            "mysql",
+            "persistence",
+            "pgsql",
+            "php",
+            "queryobject"
+        ]
+    },
+    {
+        "name": "doctrine/event-manager",
+        "version": "v1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/doctrine/event-manager.git",
+            "reference": "a520bc093a0170feeb6b14e9d83f3a14452e64b3"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/doctrine/event-manager/zipball/a520bc093a0170feeb6b14e9d83f3a14452e64b3",
+            "reference": "a520bc093a0170feeb6b14e9d83f3a14452e64b3",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^7.1"
+        },
+        "conflict": {
+            "doctrine/common": "<2.9@dev"
+        },
+        "require-dev": {
+            "doctrine/coding-standard": "^4.0",
+            "phpunit/phpunit": "^7.0"
+        },
+        "time": "2018-06-11T11:59:03+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Doctrine\\Common\\": "lib/Doctrine/Common"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Roman Borschel",
+                "email": "roman@code-factory.org"
+            },
+            {
+                "name": "Benjamin Eberlei",
+                "email": "kontakt@beberlei.de"
+            },
+            {
+                "name": "Guilherme Blanco",
+                "email": "guilhermeblanco@gmail.com"
+            },
+            {
+                "name": "Jonathan Wage",
+                "email": "jonwage@gmail.com"
+            },
+            {
+                "name": "Johannes Schmitt",
+                "email": "schmittjoh@gmail.com"
+            },
+            {
+                "name": "Marco Pivetta",
+                "email": "ocramius@gmail.com"
+            }
+        ],
+        "description": "Doctrine Event Manager component",
+        "homepage": "https://www.doctrine-project.org/projects/event-manager.html",
+        "keywords": [
+            "event",
+            "eventdispatcher",
+            "eventmanager"
+        ]
     },
     {
         "name": "doctrine/inflector",
@@ -1322,6 +1625,219 @@
         ]
     },
     {
+        "name": "nette/caching",
+        "version": "v2.5.8",
+        "version_normalized": "2.5.8.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/nette/caching.git",
+            "reference": "7fba7c7ab2585fafb7b31152f2595e1551120555"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/nette/caching/zipball/7fba7c7ab2585fafb7b31152f2595e1551120555",
+            "reference": "7fba7c7ab2585fafb7b31152f2595e1551120555",
+            "shasum": ""
+        },
+        "require": {
+            "nette/finder": "^2.2 || ~3.0.0",
+            "nette/utils": "^2.4 || ~3.0.0",
+            "php": ">=5.6.0"
+        },
+        "conflict": {
+            "nette/nette": "<2.2"
+        },
+        "require-dev": {
+            "latte/latte": "^2.4",
+            "nette/di": "^2.4 || ~3.0.0",
+            "nette/tester": "^2.0",
+            "tracy/tracy": "^2.4"
+        },
+        "suggest": {
+            "ext-pdo_sqlite": "to use SQLiteStorage or SQLiteJournal"
+        },
+        "time": "2018-03-21T11:04:32+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.5-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "src/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause",
+            "GPL-2.0",
+            "GPL-3.0"
+        ],
+        "authors": [
+            {
+                "name": "David Grudl",
+                "homepage": "https://davidgrudl.com"
+            },
+            {
+                "name": "Nette Community",
+                "homepage": "https://nette.org/contributors"
+            }
+        ],
+        "description": "⏱ Nette Caching: library with easy-to-use API and many cache backends.",
+        "homepage": "https://nette.org",
+        "keywords": [
+            "cache",
+            "journal",
+            "memcached",
+            "nette",
+            "sqlite"
+        ]
+    },
+    {
+        "name": "nette/finder",
+        "version": "v2.5.0",
+        "version_normalized": "2.5.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/nette/finder.git",
+            "reference": "6be1b83ea68ac558aff189d640abe242e0306fe2"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/nette/finder/zipball/6be1b83ea68ac558aff189d640abe242e0306fe2",
+            "reference": "6be1b83ea68ac558aff189d640abe242e0306fe2",
+            "shasum": ""
+        },
+        "require": {
+            "nette/utils": "^2.4 || ~3.0.0",
+            "php": ">=7.1"
+        },
+        "conflict": {
+            "nette/nette": "<2.2"
+        },
+        "require-dev": {
+            "nette/tester": "^2.0",
+            "tracy/tracy": "^2.3"
+        },
+        "time": "2019-02-28T18:13:25+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.5-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "src/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause",
+            "GPL-2.0",
+            "GPL-3.0"
+        ],
+        "authors": [
+            {
+                "name": "David Grudl",
+                "homepage": "https://davidgrudl.com"
+            },
+            {
+                "name": "Nette Community",
+                "homepage": "https://nette.org/contributors"
+            }
+        ],
+        "description": "? Nette Finder: find files and directories with an intuitive API.",
+        "homepage": "https://nette.org",
+        "keywords": [
+            "filesystem",
+            "glob",
+            "iterator",
+            "nette"
+        ]
+    },
+    {
+        "name": "nette/utils",
+        "version": "v3.0.1",
+        "version_normalized": "3.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/nette/utils.git",
+            "reference": "bd961f49b211997202bda1d0fbc410905be370d4"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/nette/utils/zipball/bd961f49b211997202bda1d0fbc410905be370d4",
+            "reference": "bd961f49b211997202bda1d0fbc410905be370d4",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.1"
+        },
+        "require-dev": {
+            "nette/tester": "~2.0",
+            "tracy/tracy": "^2.3"
+        },
+        "suggest": {
+            "ext-gd": "to use Image",
+            "ext-iconv": "to use Strings::webalize() and toAscii()",
+            "ext-intl": "to use Strings::webalize(), toAscii(), normalize() and compare()",
+            "ext-json": "to use Nette\\Utils\\Json",
+            "ext-mbstring": "to use Strings::lower() etc...",
+            "ext-xml": "to use Strings::length() etc. when mbstring is not available"
+        },
+        "time": "2019-03-22T01:00:30+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "src/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause",
+            "GPL-2.0",
+            "GPL-3.0"
+        ],
+        "authors": [
+            {
+                "name": "David Grudl",
+                "homepage": "https://davidgrudl.com"
+            },
+            {
+                "name": "Nette Community",
+                "homepage": "https://nette.org/contributors"
+            }
+        ],
+        "description": "🛠 Nette Utils: lightweight utilities for string & array manipulation, image handling, safe JSON encoding/decoding, validation, slug or strong password generating etc.",
+        "homepage": "https://nette.org",
+        "keywords": [
+            "array",
+            "core",
+            "datetime",
+            "images",
+            "json",
+            "nette",
+            "paginator",
+            "password",
+            "slugify",
+            "string",
+            "unicode",
+            "utf-8",
+            "utility",
+            "validation"
+        ]
+    },
+    {
         "name": "nikic/php-parser",
         "version": "v4.2.2",
         "version_normalized": "4.2.2.0",
@@ -2277,6 +2793,344 @@
             "phpunit",
             "testing",
             "xunit"
+        ]
+    },
+    {
+        "name": "pragmarx/coollection",
+        "version": "v0.6.2",
+        "version_normalized": "0.6.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/antonioribeiro/coollection.git",
+            "reference": "76db6ea9fd53c7265d23d754f934cfdd866c2f22"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/antonioribeiro/coollection/zipball/76db6ea9fd53c7265d23d754f934cfdd866c2f22",
+            "reference": "76db6ea9fd53c7265d23d754f934cfdd866c2f22",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.0",
+            "pragmarx/ia-arr": ">=5.5.33",
+            "pragmarx/ia-collection": ">=5.5.33",
+            "pragmarx/ia-str": ">=5.5.33"
+        },
+        "require-dev": {
+            "mockery/mockery": "~1.0",
+            "phpunit/php-timer": ">=1.0|>=2.0",
+            "phpunit/phpunit": ">=6.0|>=7.0",
+            "squizlabs/php_codesniffer": "^2.3"
+        },
+        "time": "2019-03-17T16:53:47+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "PragmaRX\\Coollection\\Package\\": "src/package",
+                "PragmaRX\\Coollection\\Tests\\": "tests",
+                "IlluminateExtracted\\": "src/package/Support/IlluminateExtracted",
+                "IlluminateExtracted\\Tests\\": "tests/IlluminateExtracted"
+            },
+            "files": [
+                "src/package/Support/helpers.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Antonio Carlos Ribeiro",
+                "email": "acr@antoniocarlosribeiro.com",
+                "homepage": "https://antoniocarlosribeiro.com",
+                "role": "Creator"
+            }
+        ],
+        "description": "Laravel Illuminate collection with objectified properties",
+        "homepage": "https://github.com/antonioribeiro/coollection",
+        "keywords": [
+            "collection",
+            "laravel",
+            "pragmarx"
+        ]
+    },
+    {
+        "name": "pragmarx/countries",
+        "version": "v0.6.0",
+        "version_normalized": "0.6.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/antonioribeiro/countries.git",
+            "reference": "45f10dde1b4214f2f4c447ba2f3a2b48c0ff0c4a"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/antonioribeiro/countries/zipball/45f10dde1b4214f2f4c447ba2f3a2b48c0ff0c4a",
+            "reference": "45f10dde1b4214f2f4c447ba2f3a2b48c0ff0c4a",
+            "shasum": ""
+        },
+        "require": {
+            "colinodell/json5": "^1.0",
+            "nette/caching": "^2.5",
+            "php": ">=7.0",
+            "pragmarx/coollection": "^0.6",
+            "psr/simple-cache": "^1.0"
+        },
+        "require-dev": {
+            "gasparesganga/php-shapefile": "^2.4",
+            "phpunit/phpunit": "~6.0|~7.0",
+            "squizlabs/php_codesniffer": "^2.3"
+        },
+        "time": "2019-05-05T10:07:28+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "PragmaRX\\Countries\\Package\\": "src/package",
+                "PragmaRX\\Countries\\Update\\": "src/update"
+            },
+            "files": [
+                "src/package/Support/helpers.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Antonio Carlos Ribeiro",
+                "email": "acr@antoniocarlosribeiro.com",
+                "role": "Creator"
+            }
+        ],
+        "description": "PHP Countries and Currencies",
+        "keywords": [
+            "borders",
+            "cities",
+            "countries",
+            "currencies",
+            "flag",
+            "geometry",
+            "states",
+            "taxes",
+            "timezones",
+            "topology"
+        ]
+    },
+    {
+        "name": "pragmarx/ia-arr",
+        "version": "v5.8.7",
+        "version_normalized": "5.8.7.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/antonioribeiro/ia-arr.git",
+            "reference": "693bba7d7566bbf68f92c71a74498546f25ea93f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/antonioribeiro/ia-arr/zipball/693bba7d7566bbf68f92c71a74498546f25ea93f",
+            "reference": "693bba7d7566bbf68f92c71a74498546f25ea93f",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.0",
+            "symfony/var-dumper": "~3.3|~4.0"
+        },
+        "require-dev": {
+            "mockery/mockery": "~1.0",
+            "nesbot/carbon": "^1.26 || ^2.00",
+            "phpunit/phpunit": "~6.0|~7.0",
+            "squizlabs/php_codesniffer": "^2.3"
+        },
+        "suggest": {
+            "nesbot/carbon": "Required to use Carbon datetime."
+        },
+        "time": "2019-03-22T15:54:00+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "IlluminateAgnostic\\Arr\\": "src/",
+                "IlluminateAgnostic\\Arr\\Tests\\": "tests/"
+            },
+            "files": [
+                "src/Support/helpers.php",
+                "src/Support/alias.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Antonio Carlos Ribeiro",
+                "email": "acr@antoniocarlosribeiro.com",
+                "homepage": "https://antoniocarlosribeiro.com",
+                "role": "Creator"
+            }
+        ],
+        "description": "Laravel Illuminate Agnostic Arr",
+        "homepage": "https://github.com/antonioribeiro/ia-arr",
+        "keywords": [
+            "arr",
+            "array",
+            "helpers",
+            "laravel",
+            "pragmarx"
+        ]
+    },
+    {
+        "name": "pragmarx/ia-collection",
+        "version": "v5.8.7",
+        "version_normalized": "5.8.7.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/antonioribeiro/ia-collection.git",
+            "reference": "a71846eb0dddd143667e05938e9fa61f94b8cfd9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/antonioribeiro/ia-collection/zipball/a71846eb0dddd143667e05938e9fa61f94b8cfd9",
+            "reference": "a71846eb0dddd143667e05938e9fa61f94b8cfd9",
+            "shasum": ""
+        },
+        "require": {
+            "nesbot/carbon": "^1.26 || ^2.00",
+            "php": ">=7.0",
+            "ramsey/uuid": "^3.7",
+            "symfony/var-dumper": "~3.3|~4.0"
+        },
+        "require-dev": {
+            "mockery/mockery": "~1.0",
+            "moontoast/math": "^1.1",
+            "phpunit/phpunit": "~6.0|~7.0",
+            "squizlabs/php_codesniffer": "^2.3"
+        },
+        "time": "2019-03-22T15:55:17+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "IlluminateAgnostic\\Collection\\": "src/",
+                "IlluminateAgnostic\\Collection\\Tests\\": "tests/"
+            },
+            "files": [
+                "src/Support/helpers.php",
+                "src/Support/alias.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Antonio Carlos Ribeiro",
+                "email": "acr@antoniocarlosribeiro.com",
+                "homepage": "https://antoniocarlosribeiro.com",
+                "role": "Creator"
+            }
+        ],
+        "description": "Laravel Illuminate Agnostic Collection",
+        "homepage": "https://github.com/antonioribeiro/ia-collection",
+        "keywords": [
+            "collection",
+            "helpers",
+            "laravel",
+            "pragmarx"
+        ]
+    },
+    {
+        "name": "pragmarx/ia-str",
+        "version": "v5.8.7",
+        "version_normalized": "5.8.7.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/antonioribeiro/ia-str.git",
+            "reference": "2b3304ecc01df2df4df6da534d78a26c2679064f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/antonioribeiro/ia-str/zipball/2b3304ecc01df2df4df6da534d78a26c2679064f",
+            "reference": "2b3304ecc01df2df4df6da534d78a26c2679064f",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.0"
+        },
+        "require-dev": {
+            "doctrine/inflector": "^1.2",
+            "mockery/mockery": "~1.0",
+            "moontoast/math": "^1.1",
+            "nesbot/carbon": "^1.26 || ^2.00",
+            "phpunit/phpunit": "~6.0|~7.0",
+            "ramsey/uuid": "^3.7",
+            "squizlabs/php_codesniffer": "^2.3",
+            "symfony/var-dumper": "~3.3|~4.0"
+        },
+        "suggest": {
+            "doctrine/inflector": "",
+            "nesbot/carbon": "",
+            "ramsey/uuid": "",
+            "symfony/var-dumper": ""
+        },
+        "time": "2019-03-22T15:52:51+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "IlluminateAgnostic\\Str\\": "src/",
+                "IlluminateAgnostic\\Str\\Tests\\": "tests/"
+            },
+            "files": [
+                "src/Support/helpers.php",
+                "src/Support/alias.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Antonio Carlos Ribeiro",
+                "email": "acr@antoniocarlosribeiro.com",
+                "homepage": "https://antoniocarlosribeiro.com",
+                "role": "Creator"
+            }
+        ],
+        "description": "Laravel Illuminate Agnostic Str",
+        "homepage": "https://github.com/antonioribeiro/ia-str",
+        "keywords": [
+            "helpers",
+            "laravel",
+            "pragmarx",
+            "str",
+            "string"
         ]
     },
     {
