@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use PragmaRX\Countries\Package\Countries;
 
+use App\Http\Requests\HotelCreateRequest;
+use App\Http\Requests\HotelImageUploadRequest;
+
 class HotelController extends Controller
 {
     /**
@@ -20,7 +23,7 @@ class HotelController extends Controller
     public function __construct(Hotels $hotels)
     {
         $this->hotels = $hotels;
-        $this->pagination   = env('PAGINATION', 25);
+        $this->pagination   = env('PAGINATION', 50);
     }
 
     public function index(Request $request)
@@ -53,9 +56,37 @@ class HotelController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(HotelCreateRequest $request)
     {
-        //
+        $payload = $request->except('_token', 'hotelimage');
+        $result = $this->hotels->create($payload);
+
+        if($request->file('hotelimage')){
+            $image = $request->file('hotelimage');
+            $name = $image->getClientOriginalName();
+            $image->move(public_path().'/images/'.$result->id.'/', $name);  
+
+            $result->image = $name;
+            $result->save();
+            $imageurl = asset('/images/'.$result->id.'/'.$name);
+        }else {
+            $imageurl = false;
+        }
+
+        return response()->json([
+            'success'   => true,
+            'data'   => [
+                'id'        => $result->id,
+                'name'      => $result->name,
+                'address'   => $result->address,
+                'city'      => $result->city,
+                'state'     => $result->state,
+                'country'   => $result->country,
+                'phone'     => $result->phone,
+                'email'     => $result->email,
+                'image'     => $imageurl
+            ]
+        ]);
     }
 
     /**
@@ -88,9 +119,23 @@ class HotelController extends Controller
      * @param  \App\Hotels  $hotels
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Hotels $hotels)
+    public function update(HotelCreateRequest $request, $id)
     {
-        //
+        $payload = $request->except('_token');
+        $result = $this->hotels->find($id)->update($payload);
+        $hotelinfo = $this->hotels->find($id);
+        if($result){
+            return response()->json([
+                'success'=> true,
+                'message'   => 'Hotel Updated',
+                'data'      => $hotelinfo
+            ]);
+        }
+        
+        return response()->json([
+            'success'=> false,
+            'message'   => 'Failed to Update'
+        ]);
     }
 
     /**
@@ -102,5 +147,32 @@ class HotelController extends Controller
     public function destroy(Hotels $hotels)
     {
         //
+    }
+
+    public function imageupload(HotelImageUploadRequest $request)
+    {        
+        if($request->hasfile('hotelimage'))
+         {
+            $hotel_id = $request->input('hotel_id');
+            $image = $request->file('hotelimage');
+            $name = $image->getClientOriginalName();
+            $image->move(public_path().'/images/'.$hotel_id.'/', $name);  
+            
+            $hotelinfo = $this->hotels->find($hotel_id);
+            // dd($hotelinfo);
+            $hotelinfo->image = $name;
+            $hotelinfo->save();
+            $imageurl = asset('/images/'.$hotel_id.'/'.$name);
+
+            return response()->json([
+                'success'   => true,
+                'url'   => $imageurl
+            ]);
+         }
+
+         return response()->json([
+            'success'   => false,
+            'message'   => 'Faled to Upload.Please Reload the page and try again'
+        ]);
     }
 }

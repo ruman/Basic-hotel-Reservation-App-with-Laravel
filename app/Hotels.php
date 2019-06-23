@@ -11,9 +11,10 @@ class Hotels extends Model
     public $timestamps = true;
 
     public $fillable = [
-    	'id',
-    	'adddress',
+    	'name',
+    	'address',
     	'city',
+    	'state',
     	'country',
     	'zipcode',
     	'phone',

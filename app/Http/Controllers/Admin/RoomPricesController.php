@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\RoomPrices;
+use App\Rooms;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -24,7 +25,12 @@ class RoomPricesController extends Controller
     public function index()
     {
         $room_prices = $this->room_prices->paginate($this->pagination);
-        $rooms = $this->room_prices->rooms();
+        $rooms = Rooms::all();
+        dd($rooms);
+        // $room = $this->room_prices->find(1)->room();
+        // foreach ($room_prices as $roomprice) {
+        //     $room = $this->room_prices->room();
+        // }
         return view('admin.room_prices.index')->with('room_prices', $room_prices);
     }
 

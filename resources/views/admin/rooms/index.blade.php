@@ -11,6 +11,46 @@
 .hidden {display:none;}
 .submitting {position:relative;}
 .submitting::after{position:absolute;top:0;left:0;width:100%;height:100%;display:block;content:"";z-index:99;background:rgba(255,255,255,0.5);}
+.imageList {
+    margin:0;
+    padding:0;
+    list-style:none;
+    display:float;
+    align-items:center;
+    justify-content:space-between;
+}
+.imageList li {
+    display:inline-block;
+    position:relative;
+    width:48px;
+    height:48px;
+    overflow:hidden;
+    border-radius:3px;
+    background-size:cover;
+    background-repeat:no-repeat;
+}
+.imageList li a:not(.deleteImage) {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+}
+.imageList li a.deleteImage {
+    position:absolute;
+    right:0;
+    top:-4px;
+    z-index:2;
+    opacity:0.7;
+    font-size:15px;
+}
+.imageList li a.deleteImage:hover,
+.imageList li a.deleteImage:active {
+    opacity:1;
+}
+.imageList li a.deleteImage i.fas {
+    color:red;
+}
 @endsection
 
 @section('content')
@@ -20,24 +60,20 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <div class="float-left"><h4>Hotels</h4></div>
+                    <div class="float-left"><h4>Rooms</h4></div>
                     <div class="float-right">
-                        <button type="button" class="btn btn-success btn-small" data-toggle="modal" data-target="#createNewHotel" data-create="true"> + Add New Hotel </button>
+                        <button type="button" class="btn btn-success btn-small" data-toggle="modal" data-target="#createNewHotel" data-create="true"> + Add New Room </button>
                     </div>
                 </div>
-                @if ($hotels->isEmpty())
+                @if ($rooms->isEmpty())
                     <div class="card-body">
-                        <div class="emptyMessage">No Hotel found.</div>
+                        <div class="emptyMessage">No Rooms found.</div>
                         <table id="listTable" class="table table-striped">
                             <thead class="hidden">
                                 <th>{{__('Name') }}</th>
-                                <th>{{__('Address') }}</th>
-                                <th>{{__('City') }}</th>
-                                <th>{{__('State') }}</th>
-                                <th>{{__('Country') }}</th>
-                                <th>{{ __('Zip') }}</th>
-                                <th>{{ __('Phone') }}</th>
-                                <th>{{ __('E-mail') }}</th>
+                                <th>{{__('Type') }}</th>
+                                <th>{{__('Capacity') }}</th>
+                                <th>{{ __('Images') }}</th>
                                 <th class="text-right">{{ __('Options') }}</th>
                             </thead>
                             <tbody>
@@ -49,29 +85,40 @@
                         <table id="listTable" class="table table-striped">
                             <thead>
                                 <th>{{__('Name') }}</th>
-                                <th>{{__('City') }}</th>
-                                <th>{{__('State') }}</th>
-                                <th>{{__('Country') }}</th>
+                                <th>{{__('Type') }}</th>
+                                <th>{{__('Capacity') }}</th>
+                                <th>{{ __('Images') }}</th>
                                 <th class="text-right">{{ __('Options') }}</th>
-                            </thead>
                             <tbody>
-                                @foreach($hotels as $hotel)
-                                    <tr id="hoteinfo-{{$hotel->id}}" data-id="{{$hotel->id}}" data-name="{{$hotel->name}}" data-address="{{$hotel->address}}" data-city="{{$hotel->city}}" data-state="{{$hotel->state}}" data-country="{{$hotel->country}}" data-zip="{{$hotel->zip}}" data-phone="{{$hotel->phone}}" data-email="{{$hotel->email}}" 
-                                        @if($hotel->image) 
-                                            data-image="{{ asset('/images/'.$hotel->id.'/'.$hotel->image) }}"
+                                @foreach($rooms as $room)
+                                    <tr id="roominfo-{{$room->id}}" data-id="{{$room->id}}" data-name="{{$room->name}}" data-type="{{$room->room_type_id}}" data-capacity="{{$room->room_capacity_id}}" 
+                                        @if($room->images) 
+                                            data-images="{{ $room->images }}"
                                         @endif >
-                                        <td>
-                                            {{ $hotel->name }}
+                                        <td class="align-middle">
+                                            {{ $room->name }}
                                         </td>
-                                        <td>{{ $hotel->city }}</td>
-                                        <td>{{ $hotel->state }}</td>
-                                        <td>{{ $hotel->country }}</td>
-                                        <td>
+                                        <td class="align-middle">{{ $room->type }}</td>
+                                        <td class="align-middle">{{ $room->capacity }}</td>
+                                        <td class="align-middle">
+                                            @if($room->images)
+                                                <ul class="imageList">
+                                                    @php
+                                                        $imagelist = json_decode($room->images);
+                                                    @endphp
+                                                    @foreach($imagelist as $image)
+                                                        <li style="background-image:url({{asset('/storage/rooms/'.$room->id.'/'.$image)}});">
+                                                            <a href="{{asset('/storage/rooms/'.$room->id.'/'.$image)}}" target="__blank"></a>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+                                        </td>
+                                        <td class="align-middle">
                                             <div class="clearfix tools">
                                                 <button type="button" class="btn btn-danger btn-sm">{{__('Delete') }}</button>
-                                                <button type="button" class="btn btn-primary btn-sm mr-left-10 editHotel">{{ __('Edit') }}</button>
-                                                <a href="{{ route('rooms') }}" class="btn btn-info btn-sm mr-left-10">{{__('Rooms') }}</a>
-                                                <a href="{{ route('hotel.show', $hotel->id) }}" class="btn btn-success btn-sm mr-left-10">{{__('View') }}</a>
+                                                <button type="button" class="btn btn-primary btn-sm mr-left-10 editdata">{{ __('Edit') }}</button>
+                                                <a href="{{ route('room.show', $room->id) }}" class="btn btn-success btn-sm mr-left-10">{{__('View') }}</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -84,18 +131,13 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-12 text-center">
-            {!! $hotels; !!}
-        </div>
-    </div>
     
 @endsection
 
 
 @section('pageFooter')
     
-<div class="modal" tabindex="-1" role="dialog" id="createNewHotel" data-backdrop="static">
+<div class="modal" tabindex="-1" role="dialog" id="editModal" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -121,100 +163,6 @@
 
 <script type="text/javascript" src="{{ asset('js/plugins.js') }}"></script>
 
-<script id="UpdateHotelTpl" type="text/x-jsrender">
-    <tr id="hotelinfo-@{{:id}}" data-id="@{{:id}}" data-name="@{{:name}}" data-address="@{{:address}}" data-city="@{{:city}}" data-state="@{{:state}}" data-country="@{{:country}}" data-phone="@{{:phone}}" data-email="@{{:email}}">
-        <td>@{{:name}}</td>
-        <td>@{{:city}}</td>
-        <td>@{{:state}}</td>
-        <td>@{{:country}}</td>
-        <td>
-            <div class="clearfix tools">
-                <button type="button" class="btn btn-danger btn-sm">Delete</button>
-                <button type="button" class="btn btn-primary btn-sm mr-left-10 editHotel">Edit</button>
-                <a href="/admin/rooms" class="btn btn-info btn-sm mr-left-10">Rooms</a>
-                <a href="javascript:void(0)" class="btn btn-success btn-sm mr-left-10"  data-target="#showHotelDetails">View</a>
-            </div>
-        </td>
-    </tr>
-</script>
-<script id="HotelTpl" type="text/x-jsrender">
-    <div class="row">
-        @{{if id}}
-            <div class="col-sm-6">
-        @{{else}}
-            <div class="col-sm-12">
-        @{{/if}}
-            <form name="hotelData"
-                @{{if id}} action="/admin/hotels/@{{:id}}" onsubmit="return false;" @{{else}} action="/admin/hotels" id="newHotelData" enctype="multipart/form-data" @{{/if}}
-            >
-                <div class="form-group">
-                    <label for="hotelname" class="control-label">Name</label>
-                    <input id="hotelname" type="text" name="name" class="form-control" value="@{{:name}}"" />
-                </div>
-                <div class="form-group">
-                    <label for="address" class="control-label">Address</label>
-                    <input type="text" id="address" name="address" class="form-control" value="@{{:address}}" />
-                </div>
-                <div class="form-group">
-                    <label for="hotelcity" class="control-label">City</label>
-                    <input type="text" id="hotelcity" name="city" class="form-control" value="@{{:city}}" />
-                </div>
-                <div class="form-group">
-                    <label for="hotelstate" class="control-label">State</label>
-                    <input type="text" id="hotelstate" name="state" class="form-control" value="@{{:state}}" />
-                </div>
-                <div class="form-group">
-                    <label for="hotelphone" class="control-label">Phone</label>
-                    <input type="text" id="hotelphone" name="phone" class="form-control" value="@{{:phone}}" />
-                </div>
-                <div class="form-group">
-                    <label for="hotelemail" class="control-label">E-mail</label>
-                    <input type="text" id="hotelemail" name="email" class="form-control" value="@{{:email}}" />
-                </div>
-                <div class="form-group">
-                    <label for="country" class="control-label">Country</label>
-                    <select class="form-control" id="country" name="country">
-                        <option>{{ __("Please Select Country")}}</option>
-                        @foreach($countries as $country)
-                            <option value="{{$country}}"">{{$country}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div id="updatemessage"></div>
-                <div class="form-group">
-                    @{{if id}}
-                        <button type="button" class="btn btn-primary updateHotel">Save</button>
-                    @{{else}}
-                        <button type="submit" class="btn btn-primary float-right">Create</button>
-                    @{{/if}}
-                </div>
-            </form>
-        </div>
-        @{{if id}}
-            <div class="col-sm-6" id="uploadList">
-                <div class="form-group">
-                    <label for="newhotelimage" class="control-label">Images</label>
-                    <form method="post" action="/admin/hotels/@{{:id}}/imageupload" enctype="multipart/form-data" id="uploadImage">
-                        <input type="hidden" name="hotel_id" value="@{{:id}}" />
-                        <div class="row">
-                            <div class="col-sm-8">
-                                <input type="file" name="hotelimage" />
-                            </div>
-                            <div class="col-sm-4">
-                                <button type="submit" class="btn btn-sm btn-primary">Upload</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div id="imagePreview"><img class="img-thumbnail" 
-                    @{{if image}}
-                        src="@{{:image}}"
-                    @{{/if}}
-                /></div>
-            </div>
-        @{{/if}}
-    </div>
-</script>
 
 <script id="errors" type="text/x-jsrender">
     <div class="alert alert-danger">
@@ -236,25 +184,130 @@
 </script>
 
 
+<script id="dataTpl" type="text/x-jsrender">
+    <div class="row">
+        @{{if id}}
+            <div class="col-sm-6">
+        @{{else}}
+            <div class="col-sm-12">
+        @{{/if}}
+            <form name="formData"
+                @{{if id}} action="/admin/rooms/@{{:id}}" onsubmit="return false;" @{{else}} action="/admin/rooms" id="newrowData" enctype="multipart/form-data" @{{/if}}
+            >
+                <div class="form-group">
+                    <label for="roomname" class="control-label">Name</label>
+                    <input type="text" id="roomname" name="name" class="form-control" value="@{{:name}}" />
+                </div>
+                <div class="form-group">
+                    <label for="roomtype" class="control-label">Room Type</label>
+                    <select class="form-control" id="roomtype" name="room_type_id">
+                        <option value="">{{ __("Please Select Room Type")}}</option>
+                        @foreach($room_types as $room_type)
+                            <option value="{{$room_type->id}}"">{{$room_type->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="roomcapacity" class="control-label">Capacity</label>
+                    <select class="form-control" id="roomcapacity" name="room_capacity_id">
+                        <option value="">{{ __("Please Select Room Capacity")}}</option>
+                        @foreach($room_capacities as $room_capacity)
+                            <option value="{{$room_capacity->id}}"">{{$room_capacity->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div id="updatemessage"></div>
+                <div class="form-group">
+                    @{{if id}}
+                        <button type="button" class="btn btn-primary updateData">Save</button>
+                    @{{else}}
+                        <button type="submit" class="btn btn-primary float-right">Create</button>
+                    @{{/if}}
+                </div>
+            </form>
+        </div>
+        @{{if id}}
+            <div class="col-sm-6" id="uploadList">
+                <div class="form-group">
+                    <label for="newimage" class="control-label">Images</label>
+                    <form method="post" action="/admin/rooms/@{{:id}}/imageupload" enctype="multipart/form-data" id="uploadImage">
+                        <input type="hidden" name="room_id" value="@{{:id}}" />
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <input type="file" name="room_image" />
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="submit" class="btn btn-sm btn-primary">Upload</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <ul class="imageList" data-id="@{{:id}}">
+
+                    @{{if images}}
+                        @{{props images}}
+                            <li id="image" class="image-thumb" style="background-image:url({{asset("/storage/rooms")}}/{{$room->id}}/@{{:prop}});">
+                                <a href="javascript:void(0)" class="deleteImage" data-image="@{{:prop}}"><i class="fas fa-minus-circle"></i></a>
+                            </li>
+                        @{{/props}}
+                    @{{/if}}
+                </ul>
+            </div>
+        @{{/if}}
+    </div>
+</script>
+
+
 @endsection
 
 @section('pageScript')
 
-$(document).ready(function() {
-    // var $table = $('#listTable').DataTable();
-} );
-
-jQuery(document).on('click', '.editHotel', function(e){
+jQuery(document).on('click', '.deleteImage', function(e){
     e.preventDefault();
-    var tmpl = jQuery.templates("#HotelTpl"); // Get compiled template
-    let hotelinfo = jQuery(this).closest('tr').data();
-    /* let data= {name:hotelinfo.name, address:hotelinfo.address, city:hotelinfo.city, state:hotelinfo.state} */
-    var html = tmpl.render(hotelinfo); 
-    $("#modalBody").html(html);
-    if(typeof(hotelinfo.country) !=='undefined' || hotelinfo.country !=''){
-        $("#country").val(hotelinfo.country);
+    if(confirm('Are you sure to delete this image?')){
+        let v = jQuery(this),
+            room_id = v.closest('ul').data('id'),
+            image = v.data('image');
+        jQuery.ajax({
+            type: "DELETE",
+            url: '/admin/rooms/{{$room->id}}/imageupload',
+            data: {imageurl:image},
+            beforeSend: function(){
+                
+            },
+            success: function(response){
+
+            },
+            error: function(error){
+                alert('error');
+            }
+        });
     }
-    $("#createNewHotel").modal('show');
+});
+
+$(document).ready(function(){
+});
+
+jQuery(document).on('click', '.editdata', function(e){
+    e.preventDefault();
+    var tmpl = jQuery.templates("#dataTpl"); // Get compiled template
+    let data = jQuery(this).closest('tr').data();
+    /* if(data.images){
+        let $imagelist = [];
+        $.each(data.images, function(index, imagelink){
+            $imagelist[index] = '{{asset("/storage/rooms")}}/'+data.id+'/'+imagelink+'';
+        });
+        data.images = $imagelist;
+    } */
+    var html = tmpl.render(data); 
+    $("#modalBody").html(html);
+    if(typeof(data.type) !=='undefined' || data.type !=''){
+        $("#roomtype").val(data.type);
+    }
+    if(typeof(data.capacity) !=='undefined' || data.capacity !=''){
+        $("#roomcapacity").val(data.capacity);
+    }
+    $("#editModal").modal('show');
 });
 
 $("#createNewHotel").on('show.bs.modal', function (event) {

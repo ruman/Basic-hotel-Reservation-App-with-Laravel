@@ -31,7 +31,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('hotels/{id}/preview', 'HotelController@show')->name('hotel.show');
 		Route::post('hotels/delete/{id}', 'HotelController@destroy');
 		Route::post('hotels/{id}', 'HotelController@update');
-		Route::post('hotels/store', 'HotelController@store');
+		Route::post('hotels', 'HotelController@store');
+		Route::post('hotels/{id}/imageupload', 'HotelController@imageupload');
 
 		Route::get('rooms', 'RoomsController@index')->name('rooms');
 		Route::get('rooms/{id}/edit', 'RoomsController@edit')->name('room.edit');
@@ -39,9 +40,12 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('rooms/delete/{id}', 'RoomsController@destroy');
 		Route::post('rooms/{id}', 'RoomsController@update');
 		Route::post('rooms/store', 'RoomsController@store');
+		Route::post('rooms/{id}/imageupload', 'RoomsController@imageupload');
+		Route::delete('rooms/{id}/imageupload', 'RoomsController@deleteimage');
 
 		Route::resource('roomcapacity', 'RoomCapacityController', ['except' => ['show']]);
 		Route::resource('roomtypes', 'RoomTypesController', ['except' => ['show']]);
+		Route::resource('roomprices', 'RoomPricesController', ['except' => ['show']]);
 	});
 });
 
