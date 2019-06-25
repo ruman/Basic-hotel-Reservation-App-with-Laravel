@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 use App\User;
 use Illuminate\Support\Facades\Auth;
-// use Validator;
+use Validator;
 
 class AuthController extends Controller
 {
@@ -16,9 +16,10 @@ class AuthController extends Controller
 
     public function login(){
     	// dd($request->input('password'));
-    	if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){ 
-			$user = Auth::user(); 
-			$success['token'] =  $user->createToken('AppName')-> accessToken; 
+    	if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){
+    		$appname = (request('appname')) ? request('appname') : 'HotelBookings';
+			$user = Auth::user();
+			$success['token'] =  $user->createToken($appname)-> accessToken; 
 			return response()->json(['success' => $success], $this-> successStatus); 
 		} else{ 
 			return response()->json(['error'=>'Unauthorised'], 401); 

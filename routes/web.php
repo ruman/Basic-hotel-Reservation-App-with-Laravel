@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 |
 */
 
+// Create lInk of Storage Images
 
 Auth::routes(['register' => false]);
 
@@ -39,7 +40,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('rooms/{id}/preview', 'RoomsController@show')->name('room.show');
 		Route::post('rooms/delete/{id}', 'RoomsController@destroy');
 		Route::post('rooms/{id}', 'RoomsController@update');
-		Route::post('rooms/store', 'RoomsController@store');
+		Route::post('rooms', 'RoomsController@store');
+		Route::delete('rooms/{id}', 'RoomsController@destroy');
 		Route::post('rooms/{id}/imageupload', 'RoomsController@imageupload');
 		Route::delete('rooms/{id}/imageupload', 'RoomsController@deleteimage');
 

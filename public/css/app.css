@@ -11132,3 +11132,12 @@ a.text-dark:focus {
   padding-top: 20px;
 }
 
+.pageContent {
+  padding: 40px 0;
+}
+
+.alert .list-group-flush .list-group-item {
+  background: transparent;
+  border-color: #FFF;
+}
+

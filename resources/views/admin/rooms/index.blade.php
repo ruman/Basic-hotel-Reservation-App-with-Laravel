@@ -1,12 +1,15 @@
 @extends('admin.layouts.main')
 
-@section('title')Manage Hotels
+@section('title')Manage Rooms
 @endsection
 
 @section('inlinestyle')
 .tools .btn {
     float:right;
     margin-left:8px;
+}
+.mr-10 {
+    margin-right:10px;
 }
 .hidden {display:none;}
 .submitting {position:relative;}
@@ -62,7 +65,13 @@
                 <div class="card-header">
                     <div class="float-left"><h4>Rooms</h4></div>
                     <div class="float-right">
-                        <button type="button" class="btn btn-success btn-small" data-toggle="modal" data-target="#createNewHotel" data-create="true"> + Add New Room </button>
+                        <button type="button" class="btn btn-success btn-small" data-toggle="modal" data-target="#editModal" data-create="true"> + Add New Room </button>
+                    </div>
+                    <div class="float-right mr-10">
+                        <a href="{{route('roomtypes.index')}}" class="btn btn-info btn-small"  data-create="true"> Room Types </a>
+                    </div>
+                    <div class="float-right mr-10">
+                        <a href="{{route('roomcapacity.index')}}" class="btn btn-info btn-small"  data-create="true"> Room Capacities </a>
                     </div>
                 </div>
                 @if ($rooms->isEmpty())
@@ -91,7 +100,7 @@
                                 <th class="text-right">{{ __('Options') }}</th>
                             <tbody>
                                 @foreach($rooms as $room)
-                                    <tr id="roominfo-{{$room->id}}" data-id="{{$room->id}}" data-name="{{$room->name}}" data-type="{{$room->room_type_id}}" data-capacity="{{$room->room_capacity_id}}" 
+                                    <tr id="roominfo-{{$room->id}}" data-id="{{$room->id}}" data-name="{{$room->name}}" data-type="{{$room->room_type_id}}" data-capacity="{{$room->room_capacity_id}}" data-room_type="{{$room->type}}" data-room_capacity="{{$room->capacity}}"
                                         @if($room->images) 
                                             data-images="{{ $room->images }}"
                                         @endif >
@@ -116,9 +125,9 @@
                                         </td>
                                         <td class="align-middle">
                                             <div class="clearfix tools">
-                                                <button type="button" class="btn btn-danger btn-sm">{{__('Delete') }}</button>
+                                                <button type="button" data-id="{{$room->id}}" class="btn btn-danger btn-sm rowDelete">{{__('Delete') }}</button>
                                                 <button type="button" class="btn btn-primary btn-sm mr-left-10 editdata">{{ __('Edit') }}</button>
-                                                <a href="{{ route('room.show', $room->id) }}" class="btn btn-success btn-sm mr-left-10">{{__('View') }}</a>
+                                                <a href="{{ route('room.show', $room->id) }}" class="btn btn-success btn-sm mr-left-10 rowView">{{__('View') }}</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -183,6 +192,37 @@
     </div>
 </script>
 
+<script id="dataView" type="text/x-jsrender">
+    <div class="row">
+        @{{if id}}
+            <div class="col-sm-6">
+        @{{else}}
+            <div class="col-sm-12">
+        @{{/if}}
+            <div class="form-group">
+                <label for="roomname" class="control-label">Name:</label>
+                <strong>@{{:name}}</strong>
+            </div>
+            <div class="form-group">
+                <label for="roomname" class="control-label">Type:</label>
+                <strong>@{{:room_type}}</strong>
+            </div>
+            <div class="form-group">
+                <label for="roomname" class="control-label">Capacity:</label>
+                <strong>@{{:room_capacity}}</strong>
+            </div>
+        </div>
+        @{{if id}}
+            <div class="col-sm-6" id="uploadList">
+                <ul id="imageList" class="imageList">
+                    @{{if images ~rooomid=id}}
+                        @{{props images tmpl="#uploadimage" /}}
+                    @{{/if}}
+                </ul>
+            </div>
+        @{{/if}}
+    </div>
+</script>
 
 <script id="dataTpl" type="text/x-jsrender">
     <div class="row">
@@ -228,6 +268,7 @@
         </div>
         @{{if id}}
             <div class="col-sm-6" id="uploadList">
+                <div id="updateimagemessage"></div>
                 <div class="form-group">
                     <label for="newimage" class="control-label">Images</label>
                     <form method="post" action="/admin/rooms/@{{:id}}/imageupload" enctype="multipart/form-data" id="uploadImage">
@@ -242,14 +283,10 @@
                         </div>
                     </form>
                 </div>
-                <ul class="imageList" data-id="@{{:id}}">
+                <ul id="imageList" class="imageList">
 
-                    @{{if images}}
-                        @{{props images}}
-                            <li id="image" class="image-thumb" style="background-image:url({{asset("/storage/rooms")}}/{{$room->id}}/@{{:prop}});">
-                                <a href="javascript:void(0)" class="deleteImage" data-image="@{{:prop}}"><i class="fas fa-minus-circle"></i></a>
-                            </li>
-                        @{{/props}}
+                    @{{if images ~rooomid=id}}
+                        @{{props images tmpl="#uploadimage" /}}
                     @{{/if}}
                 </ul>
             </div>
@@ -257,10 +294,56 @@
     </div>
 </script>
 
+<script id="datarowTpl" type="text/x-jsrender">
+    <tr id="roominfo-@{{:id}}" data-id="@{{:id}}" data-name="@{{:name}}" data-type="@{{:room_type_id}}" data-capacity="@{{:room_capacity_id}}" data-room_type="@{{:type}}" data-room_capacity={{@capacity}} 
+        @{{if images}}
+            data-images="@{{:images }}"
+        @{{/if}} >
+        <td class="align-middle">
+            @{{:name }}
+        </td>
+        <td class="align-middle">@{{:type }}</td>
+        <td class="align-middle">@{{:capacity }}</td>
+        <td class="align-middle">
+            @{{if images ~rooomid=id}}
+                <ul class="imageList">
+                    @{{props images tmpl="#inlineimages" /}}
+                </ul>
+            @{{/if}}
+        </td>
+        <td class="align-middle">
+            <div class="clearfix tools">
+                <button type="button" data-id="@{{:id}}" class="btn btn-danger btn-sm rowDelete">Delete</button>
+                <button type="button" class="btn btn-primary btn-sm mr-left-10 editdata">Edit</button>
+                <a href="javascript:void(0)" class="btn btn-success btn-sm mr-left-10 rowView">{{__('View') }}</a>
+            </div>
+        </td>
+    </tr>
+</script>
+<script type="text/x-jsrender" id="uploadimage">
+    <li class="image-thumb" style="background-image:url({{asset("/storage/rooms")}}/@{{:~rooomid}}@{{:rooomid}}/@{{:prop}});">
+        <a href="javascript:void(0)" class="deleteImage" data-id="@{{:~rooomid}}@{{:rooomid}}" data-image="@{{:prop}}"><i class="fas fa-minus-circle"></i></a>
+    </li>
+</script>
+<script type="text/x-jsrender" id="inlineimages">
+    <li class="image-thumb" style="background-image:url({{asset("/storage/rooms")}}/@{{:~rooomid}}/@{{:prop}});">
+        <a href="{{asset("/storage/rooms")}}/{{$room->id}}/@{{:prop}}" target="__blank"></a>
+    </li>
+</script>
+
 
 @endsection
 
 @section('pageScript')
+
+jQuery(document).on('click', '.rowView', function(e){
+    e.preventDefault();
+    let data = jQuery(this).closest('tr').data(),
+        tmpl = $.templates("#dataView"),
+        html = tmpl.render(data);
+    $("#modalBody").html(html);
+    $("#editModal").modal('show');
+});
 
 jQuery(document).on('click', '.deleteImage', function(e){
     e.preventDefault();
@@ -270,16 +353,36 @@ jQuery(document).on('click', '.deleteImage', function(e){
             image = v.data('image');
         jQuery.ajax({
             type: "DELETE",
-            url: '/admin/rooms/{{$room->id}}/imageupload',
+            url: '/admin/rooms/'+v.data('id')+'/imageupload',
             data: {imageurl:image},
             beforeSend: function(){
-                
+                $("#uploadImage").addClass('submitting');
+                $("#updateimagemessage").hide();
             },
             success: function(response){
-
+                if(response.success){
+                    let data = response.data,
+                        tmpl = $.templates('#datarowTpl'),
+                        html = tmpl.render(data);
+                    $("#roominfo-"+data.id).replaceWith(html);
+                    v.closest('li').stop().hide(300, function(){
+                        $(this).remove();
+                    });
+                }else{
+                    alert(response.message);
+                }
+                $("#uploadImage").removeClass('submitting');
             },
             error: function(error){
-                alert('error');
+                $("#uploadImage").removeClass('submitting');
+                if(error.responseText){
+                    let response = JSON.parse(error.responseText);
+                    let tmpl = jQuery.templates("#errors");
+                    let html = tmpl.render(response);
+                    $("#updateimagemessage").html(html).stop().show();                
+                }else {
+                    alert(error.message);
+                }
             }
         });
     }
@@ -292,13 +395,6 @@ jQuery(document).on('click', '.editdata', function(e){
     e.preventDefault();
     var tmpl = jQuery.templates("#dataTpl"); // Get compiled template
     let data = jQuery(this).closest('tr').data();
-    /* if(data.images){
-        let $imagelist = [];
-        $.each(data.images, function(index, imagelink){
-            $imagelist[index] = '{{asset("/storage/rooms")}}/'+data.id+'/'+imagelink+'';
-        });
-        data.images = $imagelist;
-    } */
     var html = tmpl.render(data); 
     $("#modalBody").html(html);
     if(typeof(data.type) !=='undefined' || data.type !=''){
@@ -310,18 +406,18 @@ jQuery(document).on('click', '.editdata', function(e){
     $("#editModal").modal('show');
 });
 
-$("#createNewHotel").on('show.bs.modal', function (event) {
+$("#editModal").on('show.bs.modal', function (event) {
     var v = $(event.relatedTarget);
     if(v.data('create')){
-        var tmpl = jQuery.templates("#HotelTpl"); // Get compiled template
-        let data= {name:'', address:'', city:'', state:'', 'phone':'', 'email':''}
+        var tmpl = jQuery.templates("#dataTpl"); // Get compiled template
+        let data= {name:''}
         var html = tmpl.render(data); 
         $("#modalBody").html(html);
         var modal = $(this);
-        modal.find('.modal-title').text('Create New Hotel');
+        modal.find('.modal-title').text('Create New Room');
     }else{
         var modal = $(this);
-        modal.find('.modal-title').text('Edit Hotel');
+        modal.find('.modal-title').text('Edit Room');
     }   
 });
 
@@ -338,23 +434,32 @@ jQuery(document).on('submit', '#uploadImage', function(e){
         processData:false,
         beforeSend: function(){
             form.addClass('submitting');
-            $("#imagePreview").hide();
+            $("#updateimagemessage").hide();
         },
         success: function(response){
             form.removeClass('submitting');
-            form.find('input[name="hotelimage"]').val('');
             if(response.success){
-                $("#imagePreview").find('img').attr('src', response.url).end().show();
+                let url = response.url,
+                    result = response.result,
+                    data = {'prop':url, 'rooomid':result.id};
+                let tmpl = $.templates('#uploadimage'),
+                    html = tmpl.render(data);
+                $("#imageList").append(html);
+                $('#uploadImage input[type="file"]').val('');
+                let rowtmpl = $.templates('#datarowTpl'),
+                    rowhtml = rowtmpl.render(result);
+                $("#roominfo-"+result.id).replaceWith(rowhtml);
             }else {
                 alert(response.message);
             }
         }, 
         error: function(error){
-            form.removeClass('submitting');
+            $("#uploadImage").removeClass('submitting');
             if(error.responseText){
                 let response = JSON.parse(error.responseText);
-                let info = response.errors.hotelimage[0];
-                alert(info);
+                let tmpl = jQuery.templates("#errors");
+                let html = tmpl.render(response);
+                $("#updateimagemessage").html(html).stop().show();                
             }else {
                 alert(error.message);
             }
@@ -363,7 +468,7 @@ jQuery(document).on('submit', '#uploadImage', function(e){
 });
 
 
-jQuery(document).on('submit', '#newHotelData', function(e){
+jQuery(document).on('submit', '#newrowData', function(e){
     e.preventDefault();
     let form = $(this);
     jQuery.ajax({
@@ -375,16 +480,15 @@ jQuery(document).on('submit', '#newHotelData', function(e){
         processData:false,
         beforeSend: function(){
             form.addClass('submitting');
-            $("#imagePreview").hide();
         },
         success: function(response){
             if(response.success){
                 let data = response.data;
-                let rowtmpl = $.templates('#UpdateHotelTpl'),
+                let rowtmpl = $.templates('#datarowTpl'),
                     newdata = rowtmpl.render(data);
                 $("#listTable tbody").append(newdata);
-                $("#createNewHotel .modal-body").html('');
-                $("#createNewHotel").modal('hide');
+                $("#editModal .modal-body").html('');
+                $("#editModal").modal('hide');
                 alert('New Hotel Added');
             }else {
                 alert(response.message);
@@ -406,7 +510,7 @@ jQuery(document).on('submit', '#newHotelData', function(e){
 });
 
 
-jQuery(document).on('click', '.updateHotel', function(e){
+jQuery(document).on('click', '.updateData', function(e){
     e.preventDefault();
     let form = $(this).closest('form');
     jQuery.ajax({
@@ -418,20 +522,17 @@ jQuery(document).on('click', '.updateHotel', function(e){
             $("#updatemessage").hide();
         },
         success: function(response){
-            form.removeClass('submitting');
+            form.removeClass('submitting');            
             if(response.success){
-                let tmpl = $.templates("#success"),
-                    html = tmpl.render(response);
-                $("#updatemessage").html(html).stop().show();
                 let data = response.data;
-                let $row = $("#hoteinfo-"+data.id),
-                    rowtmpl = $.templates('#UpdateHotelTpl'),
+                let rowtmpl = $.templates('#datarowTpl'),
                     newdata = rowtmpl.render(data);
-
-                $row.replaceWith(newdata);
+                $("#roominfo-"+data.id).replaceWith(newdata);
+                $("#updatemessage").html(html).stop().show();
             }else {
                 alert(response.message);
             }
+
         }, 
         error: function(error){
             form.removeClass('submitting');
@@ -446,6 +547,34 @@ jQuery(document).on('click', '.updateHotel', function(e){
         }
     });
 });
+
+jQuery(document).on('click', '.rowDelete', function(e){
+        e.preventDefault();
+        let v = jQuery(this);
+        if(confirm('Are you sure?')){
+            jQuery.ajax({
+                type:'DELETE',
+                url: '/admin/rooms/'+v.data('id'),
+                beforeSend: function(){
+                    v.closest('tr').addClass('deleting');
+                },
+                success: function(response){
+                    v.closest('tr').removeClass('deleting');
+                    if(response){
+                        v.closest('tr').stop().slideUp(300, function(){
+                            jQuery(this).remove();
+                        });
+                    }else {
+                        alert(response.message);
+                    }
+                }, 
+                error: function(error){
+                    v.removeClass('submitting');
+                    alert('Failed to Delete');
+                }
+            })
+        }
+    });
 
 
 

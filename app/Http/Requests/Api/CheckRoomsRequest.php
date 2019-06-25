@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RoomCreateRequest extends FormRequest
+class CheckRoomsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,10 +13,7 @@ class RoomCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        if (auth()->user()) {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     /**
@@ -27,9 +24,9 @@ class RoomCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'  => 'required',
-            'room_type_id'  => 'required',
-            'room_capacity_id'  => 'required'
+            'from'  => 'required',
+            'to'    => 'required',
+            'roomtype'    => 'required'
         ];
     }
 }

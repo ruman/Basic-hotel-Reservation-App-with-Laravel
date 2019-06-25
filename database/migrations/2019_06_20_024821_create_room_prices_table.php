@@ -19,9 +19,6 @@ class CreateRoomPricesTable extends Migration
             $table->bigInteger('room_id')->unsigned();
             $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');
             $table->string('rate');
-            $table->text('rate_info');
-            $table->timestamp('date_start')->nullable();
-            $table->timestamp('date_end')->nullable();
             $table->timestamps();
         });
     }

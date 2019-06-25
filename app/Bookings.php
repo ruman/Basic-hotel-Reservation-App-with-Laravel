@@ -7,11 +7,28 @@ use Illuminate\Database\Eloquent\Model;
 class Bookings extends Model
 {
     //
-    public function hotels(){
-    	return $this->belongsToMany(Hotels::class);
+	public $fillable = [
+    	'hotel_id',
+    	'room_id',
+    	'check_in',
+    	'check_out',
+    	'customer_id'
+    ];
+
+
+    public function hotel()
+    {
+    	return $this->belongsTo(Hotels::class);
     }
 
-    public function rooms(){
-    	return $this->hasMany(Rooms::class);
+    public function room()
+    {
+    	return $this->belongsTo(Hotels::class);
     }
+
+    public function customer()
+    {
+    	return $this->belongsTo(Customers::class);
+    }
+
 }

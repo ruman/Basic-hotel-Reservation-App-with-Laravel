@@ -15,9 +15,5 @@ class RoomPrices extends Model
 		'end_date'
     ];
 
-    public function room(){
-    	return $this->hasOne(Rooms::class);
-    }
-
 
 }
