@@ -49,5 +49,6 @@ This application is now fully-functional but still have some points which will n
 - Create Backend Manager for Room Prices
 - Create Backend Manager for Bookings
 - Create Backend Manager for Customers
+- Cleanup codes [mainly remove the un-used react packages]
 
 

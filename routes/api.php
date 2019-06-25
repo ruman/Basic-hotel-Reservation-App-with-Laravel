@@ -20,7 +20,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::prefix('v1')->group(function(){
 	Route::post('login', 'Api\AuthController@login');
 	Route::group(['middleware' => 'auth:api'], function(){
-		Route::post('getUser', 'Api\AuthController@getUser');
+		Route::get('getroomtypes', 'Api\BookingManager@room_types');
+		Route::post('listrooms', 'Api\BookingManager@getrooms');
+		Route::post('createreservation', 'Api\BookingManager@makereservation');
 	});
 
 	Route::get('room_types', 'Api\BookingManager@room_types');
