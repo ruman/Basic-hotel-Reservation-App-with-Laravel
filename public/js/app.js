@@ -5683,6 +5683,949 @@ module.exports = function isBuffer (obj) {
 
 /***/ }),
 
+/***/ "./node_modules/lodash.get/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/lodash.get/index.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/**
+ * lodash (Custom Build) <https://lodash.com/>
+ * Build: `lodash modularize exports="npm" -o ./`
+ * Copyright jQuery Foundation and other contributors <https://jquery.org/>
+ * Released under MIT license <https://lodash.com/license>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ */
+
+/** Used as the `TypeError` message for "Functions" methods. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/** `Object#toString` result references. */
+var funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    symbolTag = '[object Symbol]';
+
+/** Used to match property names within property paths. */
+var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+    reIsPlainProp = /^\w*$/,
+    reLeadingDot = /^\./,
+    rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
+
+/**
+ * Used to match `RegExp`
+ * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+ */
+var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+/** Used to match backslashes in property paths. */
+var reEscapeChar = /\\(\\)?/g;
+
+/** Used to detect host constructors (Safari). */
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+/**
+ * Gets the value at `key` of `object`.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
+ */
+function getValue(object, key) {
+  return object == null ? undefined : object[key];
+}
+
+/**
+ * Checks if `value` is a host object in IE < 9.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
+ */
+function isHostObject(value) {
+  // Many host objects are `Object` objects that can coerce to strings
+  // despite having improperly defined `toString` methods.
+  var result = false;
+  if (value != null && typeof value.toString != 'function') {
+    try {
+      result = !!(value + '');
+    } catch (e) {}
+  }
+  return result;
+}
+
+/** Used for built-in method references. */
+var arrayProto = Array.prototype,
+    funcProto = Function.prototype,
+    objectProto = Object.prototype;
+
+/** Used to detect overreaching core-js shims. */
+var coreJsData = root['__core-js_shared__'];
+
+/** Used to detect methods masquerading as native. */
+var maskSrcKey = (function() {
+  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+  return uid ? ('Symbol(src)_1.' + uid) : '';
+}());
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objectToString = objectProto.toString;
+
+/** Used to detect if a method is native. */
+var reIsNative = RegExp('^' +
+  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+);
+
+/** Built-in value references. */
+var Symbol = root.Symbol,
+    splice = arrayProto.splice;
+
+/* Built-in method references that are verified to be native. */
+var Map = getNative(root, 'Map'),
+    nativeCreate = getNative(Object, 'create');
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolToString = symbolProto ? symbolProto.toString : undefined;
+
+/**
+ * Creates a hash object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Hash(entries) {
+  var index = -1,
+      length = entries ? entries.length : 0;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+/**
+ * Removes all key-value entries from the hash.
+ *
+ * @private
+ * @name clear
+ * @memberOf Hash
+ */
+function hashClear() {
+  this.__data__ = nativeCreate ? nativeCreate(null) : {};
+}
+
+/**
+ * Removes `key` and its value from the hash.
+ *
+ * @private
+ * @name delete
+ * @memberOf Hash
+ * @param {Object} hash The hash to modify.
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function hashDelete(key) {
+  return this.has(key) && delete this.__data__[key];
+}
+
+/**
+ * Gets the hash value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Hash
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function hashGet(key) {
+  var data = this.__data__;
+  if (nativeCreate) {
+    var result = data[key];
+    return result === HASH_UNDEFINED ? undefined : result;
+  }
+  return hasOwnProperty.call(data, key) ? data[key] : undefined;
+}
+
+/**
+ * Checks if a hash value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Hash
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function hashHas(key) {
+  var data = this.__data__;
+  return nativeCreate ? data[key] !== undefined : hasOwnProperty.call(data, key);
+}
+
+/**
+ * Sets the hash `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Hash
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the hash instance.
+ */
+function hashSet(key, value) {
+  var data = this.__data__;
+  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+  return this;
+}
+
+// Add methods to `Hash`.
+Hash.prototype.clear = hashClear;
+Hash.prototype['delete'] = hashDelete;
+Hash.prototype.get = hashGet;
+Hash.prototype.has = hashHas;
+Hash.prototype.set = hashSet;
+
+/**
+ * Creates an list cache object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function ListCache(entries) {
+  var index = -1,
+      length = entries ? entries.length : 0;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+/**
+ * Removes all key-value entries from the list cache.
+ *
+ * @private
+ * @name clear
+ * @memberOf ListCache
+ */
+function listCacheClear() {
+  this.__data__ = [];
+}
+
+/**
+ * Removes `key` and its value from the list cache.
+ *
+ * @private
+ * @name delete
+ * @memberOf ListCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function listCacheDelete(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    return false;
+  }
+  var lastIndex = data.length - 1;
+  if (index == lastIndex) {
+    data.pop();
+  } else {
+    splice.call(data, index, 1);
+  }
+  return true;
+}
+
+/**
+ * Gets the list cache value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf ListCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function listCacheGet(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  return index < 0 ? undefined : data[index][1];
+}
+
+/**
+ * Checks if a list cache value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf ListCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function listCacheHas(key) {
+  return assocIndexOf(this.__data__, key) > -1;
+}
+
+/**
+ * Sets the list cache `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf ListCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the list cache instance.
+ */
+function listCacheSet(key, value) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    data.push([key, value]);
+  } else {
+    data[index][1] = value;
+  }
+  return this;
+}
+
+// Add methods to `ListCache`.
+ListCache.prototype.clear = listCacheClear;
+ListCache.prototype['delete'] = listCacheDelete;
+ListCache.prototype.get = listCacheGet;
+ListCache.prototype.has = listCacheHas;
+ListCache.prototype.set = listCacheSet;
+
+/**
+ * Creates a map cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function MapCache(entries) {
+  var index = -1,
+      length = entries ? entries.length : 0;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+/**
+ * Removes all key-value entries from the map.
+ *
+ * @private
+ * @name clear
+ * @memberOf MapCache
+ */
+function mapCacheClear() {
+  this.__data__ = {
+    'hash': new Hash,
+    'map': new (Map || ListCache),
+    'string': new Hash
+  };
+}
+
+/**
+ * Removes `key` and its value from the map.
+ *
+ * @private
+ * @name delete
+ * @memberOf MapCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function mapCacheDelete(key) {
+  return getMapData(this, key)['delete'](key);
+}
+
+/**
+ * Gets the map value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf MapCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function mapCacheGet(key) {
+  return getMapData(this, key).get(key);
+}
+
+/**
+ * Checks if a map value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf MapCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function mapCacheHas(key) {
+  return getMapData(this, key).has(key);
+}
+
+/**
+ * Sets the map `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf MapCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the map cache instance.
+ */
+function mapCacheSet(key, value) {
+  getMapData(this, key).set(key, value);
+  return this;
+}
+
+// Add methods to `MapCache`.
+MapCache.prototype.clear = mapCacheClear;
+MapCache.prototype['delete'] = mapCacheDelete;
+MapCache.prototype.get = mapCacheGet;
+MapCache.prototype.has = mapCacheHas;
+MapCache.prototype.set = mapCacheSet;
+
+/**
+ * Gets the index at which the `key` is found in `array` of key-value pairs.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} key The key to search for.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function assocIndexOf(array, key) {
+  var length = array.length;
+  while (length--) {
+    if (eq(array[length][0], key)) {
+      return length;
+    }
+  }
+  return -1;
+}
+
+/**
+ * The base implementation of `_.get` without support for default values.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @returns {*} Returns the resolved value.
+ */
+function baseGet(object, path) {
+  path = isKey(path, object) ? [path] : castPath(path);
+
+  var index = 0,
+      length = path.length;
+
+  while (object != null && index < length) {
+    object = object[toKey(path[index++])];
+  }
+  return (index && index == length) ? object : undefined;
+}
+
+/**
+ * The base implementation of `_.isNative` without bad shim checks.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function,
+ *  else `false`.
+ */
+function baseIsNative(value) {
+  if (!isObject(value) || isMasked(value)) {
+    return false;
+  }
+  var pattern = (isFunction(value) || isHostObject(value)) ? reIsNative : reIsHostCtor;
+  return pattern.test(toSource(value));
+}
+
+/**
+ * The base implementation of `_.toString` which doesn't convert nullish
+ * values to empty strings.
+ *
+ * @private
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ */
+function baseToString(value) {
+  // Exit early for strings to avoid a performance hit in some environments.
+  if (typeof value == 'string') {
+    return value;
+  }
+  if (isSymbol(value)) {
+    return symbolToString ? symbolToString.call(value) : '';
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+/**
+ * Casts `value` to a path array if it's not one.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {Array} Returns the cast property path array.
+ */
+function castPath(value) {
+  return isArray(value) ? value : stringToPath(value);
+}
+
+/**
+ * Gets the data for `map`.
+ *
+ * @private
+ * @param {Object} map The map to query.
+ * @param {string} key The reference key.
+ * @returns {*} Returns the map data.
+ */
+function getMapData(map, key) {
+  var data = map.__data__;
+  return isKeyable(key)
+    ? data[typeof key == 'string' ? 'string' : 'hash']
+    : data.map;
+}
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+/**
+ * Checks if `value` is a property name and not a property path.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+ */
+function isKey(value, object) {
+  if (isArray(value)) {
+    return false;
+  }
+  var type = typeof value;
+  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
+      value == null || isSymbol(value)) {
+    return true;
+  }
+  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+    (object != null && value in Object(object));
+}
+
+/**
+ * Checks if `value` is suitable for use as unique object key.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+ */
+function isKeyable(value) {
+  var type = typeof value;
+  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+    ? (value !== '__proto__')
+    : (value === null);
+}
+
+/**
+ * Checks if `func` has its source masked.
+ *
+ * @private
+ * @param {Function} func The function to check.
+ * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+ */
+function isMasked(func) {
+  return !!maskSrcKey && (maskSrcKey in func);
+}
+
+/**
+ * Converts `string` to a property path array.
+ *
+ * @private
+ * @param {string} string The string to convert.
+ * @returns {Array} Returns the property path array.
+ */
+var stringToPath = memoize(function(string) {
+  string = toString(string);
+
+  var result = [];
+  if (reLeadingDot.test(string)) {
+    result.push('');
+  }
+  string.replace(rePropName, function(match, number, quote, string) {
+    result.push(quote ? string.replace(reEscapeChar, '$1') : (number || match));
+  });
+  return result;
+});
+
+/**
+ * Converts `value` to a string key if it's not a string or symbol.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {string|symbol} Returns the key.
+ */
+function toKey(value) {
+  if (typeof value == 'string' || isSymbol(value)) {
+    return value;
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+/**
+ * Converts `func` to its source code.
+ *
+ * @private
+ * @param {Function} func The function to process.
+ * @returns {string} Returns the source code.
+ */
+function toSource(func) {
+  if (func != null) {
+    try {
+      return funcToString.call(func);
+    } catch (e) {}
+    try {
+      return (func + '');
+    } catch (e) {}
+  }
+  return '';
+}
+
+/**
+ * Creates a function that memoizes the result of `func`. If `resolver` is
+ * provided, it determines the cache key for storing the result based on the
+ * arguments provided to the memoized function. By default, the first argument
+ * provided to the memoized function is used as the map cache key. The `func`
+ * is invoked with the `this` binding of the memoized function.
+ *
+ * **Note:** The cache is exposed as the `cache` property on the memoized
+ * function. Its creation may be customized by replacing the `_.memoize.Cache`
+ * constructor with one whose instances implement the
+ * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
+ * method interface of `delete`, `get`, `has`, and `set`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to have its output memoized.
+ * @param {Function} [resolver] The function to resolve the cache key.
+ * @returns {Function} Returns the new memoized function.
+ * @example
+ *
+ * var object = { 'a': 1, 'b': 2 };
+ * var other = { 'c': 3, 'd': 4 };
+ *
+ * var values = _.memoize(_.values);
+ * values(object);
+ * // => [1, 2]
+ *
+ * values(other);
+ * // => [3, 4]
+ *
+ * object.a = 2;
+ * values(object);
+ * // => [1, 2]
+ *
+ * // Modify the result cache.
+ * values.cache.set(object, ['a', 'b']);
+ * values(object);
+ * // => ['a', 'b']
+ *
+ * // Replace `_.memoize.Cache`.
+ * _.memoize.Cache = WeakMap;
+ */
+function memoize(func, resolver) {
+  if (typeof func != 'function' || (resolver && typeof resolver != 'function')) {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  var memoized = function() {
+    var args = arguments,
+        key = resolver ? resolver.apply(this, args) : args[0],
+        cache = memoized.cache;
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    var result = func.apply(this, args);
+    memoized.cache = cache.set(key, result);
+    return result;
+  };
+  memoized.cache = new (memoize.Cache || MapCache);
+  return memoized;
+}
+
+// Assign cache to `_.memoize`.
+memoize.Cache = MapCache;
+
+/**
+ * Performs a
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * comparison between two values to determine if they are equivalent.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.eq(object, object);
+ * // => true
+ *
+ * _.eq(object, other);
+ * // => false
+ *
+ * _.eq('a', 'a');
+ * // => true
+ *
+ * _.eq('a', Object('a'));
+ * // => false
+ *
+ * _.eq(NaN, NaN);
+ * // => true
+ */
+function eq(value, other) {
+  return value === other || (value !== value && other !== other);
+}
+
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 8-9 which returns 'object' for typed array and other constructors.
+  var tag = isObject(value) ? objectToString.call(value) : '';
+  return tag == funcTag || tag == genTag;
+}
+
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
+}
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return !!value && typeof value == 'object';
+}
+
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+function isSymbol(value) {
+  return typeof value == 'symbol' ||
+    (isObjectLike(value) && objectToString.call(value) == symbolTag);
+}
+
+/**
+ * Converts `value` to a string. An empty string is returned for `null`
+ * and `undefined` values. The sign of `-0` is preserved.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ * @example
+ *
+ * _.toString(null);
+ * // => ''
+ *
+ * _.toString(-0);
+ * // => '-0'
+ *
+ * _.toString([1, 2, 3]);
+ * // => '1,2,3'
+ */
+function toString(value) {
+  return value == null ? '' : baseToString(value);
+}
+
+/**
+ * Gets the value at `path` of `object`. If the resolved value is
+ * `undefined`, the `defaultValue` is returned in its place.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.7.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @param {*} [defaultValue] The value returned for `undefined` resolved values.
+ * @returns {*} Returns the resolved value.
+ * @example
+ *
+ * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+ *
+ * _.get(object, 'a[0].b.c');
+ * // => 3
+ *
+ * _.get(object, ['a', '0', 'b', 'c']);
+ * // => 3
+ *
+ * _.get(object, 'a.b.c', 'default');
+ * // => 'default'
+ */
+function get(object, path, defaultValue) {
+  var result = object == null ? undefined : baseGet(object, path);
+  return result === undefined ? defaultValue : result;
+}
+
+module.exports = get;
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
 /***/ "./node_modules/lodash.isfunction/index.js":
 /*!*************************************************!*\
   !*** ./node_modules/lodash.isfunction/index.js ***!
@@ -53440,6 +54383,175 @@ exports.classNamesShape = classNamesShape;
 
 /***/ }),
 
+/***/ "./node_modules/react-valida-hook/lib/index.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/react-valida-hook/lib/index.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = useValitedForm;
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _validaJs = _interopRequireDefault(__webpack_require__(/*! valida-js */ "./node_modules/valida-js/lib/index.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function stateFactory(fields) {
+  return Object.keys(fields).reduce(function (acc, key) {
+    acc[key] = {
+      value: fields[key],
+      meta: {
+        touched: false,
+        dirty: false
+      }
+    };
+    return acc;
+  }, {});
+}
+
+function emptyErrorFactory(fields) {
+  return Object.keys(fields).reduce(function (acc, key) {
+    acc[key] = [];
+    return acc;
+  }, {});
+}
+
+function rulesByNameFactory(descriptors, validators) {
+  var descriptorBy = descriptors.reduce(function (acc, descriptor) {
+    acc[descriptor.name] = acc[descriptor.name] ? acc[descriptor.name].concat([descriptor]) : [descriptor];
+    return acc;
+  }, {});
+  return Object.keys(descriptorBy).reduce(function (acc, key) {
+    acc[key] = _validaJs.default.rulesCreator(validators, descriptorBy[key]);
+    return acc;
+  }, {
+    default: _validaJs.default.rulesCreator(validators, descriptors)
+  });
+}
+
+function getDataFromState(state) {
+  return Object.keys(state).reduce(function (acc, key) {
+    acc[key] = state[key].value;
+    return acc;
+  }, {});
+}
+
+function extendsValidations(key, validation) {
+  var newErrors = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var newValidation = {
+    errors: _objectSpread({}, validation.errors, _defineProperty({}, key, newErrors))
+  };
+  newValidation['valid'] = Object.keys(newValidation.errors).every(function (errorKey) {
+    return newValidation.errors[errorKey].length === 0;
+  });
+  return newValidation;
+}
+
+function onChangeHandlerByKey(state, key, setState, setValidation, validation, rulesBy) {
+  return function (event) {
+    var newState = _objectSpread({}, state, _defineProperty({}, key, _objectSpread({}, state[key], {
+      value: event.currentTarget.value,
+      meta: _objectSpread({}, state[key].meta, {
+        dirty: true
+      })
+    })));
+
+    var newErrors = _validaJs.default.validate(rulesBy[key], getDataFromState(newState)).errors[key];
+
+    setState(newState);
+    setValidation(extendsValidations(key, validation, newErrors));
+  };
+}
+
+function onClickHandlerByKey(state, key, setState) {
+  return function (_) {
+    setState(_objectSpread({}, state, _defineProperty({}, key, _objectSpread({}, state[key], {
+      meta: _objectSpread({}, state[key].meta, {
+        touched: true
+      })
+    }))));
+  };
+}
+
+function formDataFactory(state, setState, setValidation, validation, rulesBy) {
+  return Object.keys(state).reduce(function (acc, key) {
+    acc[key] = {
+      meta: state[key].meta,
+      input: {
+        value: state[key].value,
+        onClick: onClickHandlerByKey(state, key, setState, setValidation, validation, rulesBy),
+        onChange: onChangeHandlerByKey(state, key, setState, setValidation, validation, rulesBy)
+      }
+    };
+    return acc;
+  }, {});
+}
+
+function useValitedForm() {
+  var fields = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var descriptors = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var validators = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _validaJs.default.validators;
+  var initialErrorsObj = emptyErrorFactory(fields);
+  var initialState = stateFactory(fields);
+
+  var _useState = (0, _react.useState)(initialState),
+      _useState2 = _slicedToArray(_useState, 2),
+      state = _useState2[0],
+      setState = _useState2[1];
+
+  var _useState3 = (0, _react.useState)({
+    valid: true,
+    errors: initialErrorsObj
+  }),
+      _useState4 = _slicedToArray(_useState3, 2),
+      validation = _useState4[0],
+      setValidation = _useState4[1];
+
+  var rulesBy = rulesByNameFactory(descriptors, validators);
+  var form = formDataFactory(state, setState, setValidation, validation, rulesBy);
+
+  var getData = function getData() {
+    return getDataFromState(state);
+  };
+
+  var setData = function setData(data) {
+    return setState(stateFactory(data));
+  };
+
+  var validate = function validate() {
+    var newValidations = _validaJs.default.validate(rulesBy.default, getDataFromState(state));
+
+    setValidation(_objectSpread({}, newValidations, {
+      errors: _objectSpread({}, initialErrorsObj, newValidations.errors)
+    }));
+    return newValidations.valid;
+  };
+
+  return [form, validation, validate, getData, setData];
+}
+
+/***/ }),
+
 /***/ "./node_modules/react/cjs/react.development.js":
 /*!*****************************************************!*\
   !*** ./node_modules/react/cjs/react.development.js ***!
@@ -65517,6 +66629,289 @@ module.exports = function (css) {
 
 /***/ }),
 
+/***/ "./node_modules/valida-js/lib/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/valida-js/lib/index.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var validators = _interopRequireWildcard(__webpack_require__(/*! ./validators */ "./node_modules/valida-js/lib/validators.js"));
+
+var Utils = _interopRequireWildcard(__webpack_require__(/*! ./utils */ "./node_modules/valida-js/lib/utils.js"));
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var _default = _objectSpread({}, Utils, {
+  validators: validators
+});
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/valida-js/lib/utils.js":
+/*!*********************************************!*\
+  !*** ./node_modules/valida-js/lib/utils.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.rulesCreator = rulesCreator;
+exports.validate = validate;
+exports.factoryValidationObj = factoryValidationObj;
+
+/**
+ * @typedef {Object} IError
+ * @property {string} key
+ * @property {string} error
+ */
+
+/**
+ * @typedef {Object} validationsObj
+ * @property {boolean} valid
+ * @property {Object} error
+ */
+
+/**
+ * @typedef {Object} validationObj
+ * @property {boolean} valid
+ * @property {IError} errors
+ */
+
+/**
+ * @typedef {Object} IDescription
+ * @property {string} type
+ * @property {string} name
+ * @property {string} stateMap
+ * @property {any} compareWith
+ * @property {any} defaultValue
+ */
+
+/**
+ * @typedef {Object} IRulesDescriptor
+ * @property {string} type
+ * @property {Function} validate
+*/
+
+/**
+ * @typedef {Function} rule
+ * @param {Object} state
+ * @param {string} key
+ * @returns {validationObj}
+*/
+
+/**
+ * @typedef {Object} rules
+*/
+var capitalizeFirstLetter = function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+var capitalize = function capitalize(string) {
+  return string.trim().replace(/-/, ' ').split(' ').map(capitalizeFirstLetter).reduce(function (reduced, value) {
+    return "".concat(reduced).concat(value);
+  }, '');
+};
+/**
+ * Create a rule for validation
+ * @param {IDescription} description
+ * @returns {IRulesDescriptor}
+*/
+
+
+function ruleCreator(validators, description) {
+  var type = description.type;
+  var key = description.name;
+
+  if (description.validate) {
+    return function (state) {
+      return factoryValidationObj(description.validate(state), type, key);
+    };
+  }
+
+  var validate = validators[description.type] ? validators[description.type](description.stateMap, type, key, description.compareWith, description.defaultValue) : validators.required(description.stateMap, type, key, description.compareWith, description.defaultValue);
+  return validate;
+}
+/**
+ * Create Rules for validate
+ * @param {Object} validators
+ * @param {Array<IDescription>} descriptions
+ * @returns {Object}
+*/
+
+
+function rulesCreator(validators) {
+  var descriptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  return descriptions.reduce(function (rules, description) {
+    if (!description.name || !description.type || !(description.stateMap || description.validate)) {
+      throw new Error('Every descriptor needs at least name, type and stateMap or validate');
+    }
+
+    var validate = ruleCreator(validators, description);
+    var functionName = capitalize("".concat(description.name, "-").concat(description.type));
+    rules[functionName] = validate;
+    return rules;
+  }, {});
+}
+/**
+ * Pass array of rules
+ * @param {Array} rules
+ * @param {Object} state
+ * @param {Object} previus
+ * @returns {validationsObj}
+ */
+
+
+function validate() {
+  var rules = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var state = arguments.length > 1 ? arguments[1] : undefined;
+  var previus = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {
+    valid: true,
+    errors: {}
+  };
+  return Object.keys(rules).reduce(function (results, key) {
+    var rule = rules[key];
+    var appliedRule = rule(state);
+    results.valid = results.valid && appliedRule.valid;
+
+    if (appliedRule.error) {
+      results.errors[appliedRule.error.key] = results.errors[appliedRule.error.key] ? results.errors[appliedRule.error.key].concat([appliedRule.error.type]) : [appliedRule.error.type];
+    }
+
+    return results;
+  }, previus);
+}
+/**
+ * Create a validation object
+ * @param {Boolean} valid
+ * @param {String} type
+ * @param {String} key
+ * @returns {validationObj}
+ */
+
+
+function factoryValidationObj() {
+  var valid = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  var type = arguments.length > 1 ? arguments[1] : undefined;
+  var key = arguments.length > 2 ? arguments[2] : undefined;
+
+  if (!type || !key) {
+    throw new Error('type and key are required');
+  }
+
+  return {
+    valid: Boolean(valid),
+    error: valid ? undefined : {
+      key: key,
+      type: type
+    }
+  };
+}
+
+/***/ }),
+
+/***/ "./node_modules/valida-js/lib/validators.js":
+/*!**************************************************!*\
+  !*** ./node_modules/valida-js/lib/validators.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.regex = exports.isEmail = exports.compareFields = exports.required = exports.maxLength = exports.minLength = void 0;
+
+var _lodash = _interopRequireDefault(__webpack_require__(/*! lodash.get */ "./node_modules/lodash.get/index.js"));
+
+var _utils = __webpack_require__(/*! ./utils */ "./node_modules/valida-js/lib/utils.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var emailRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~.]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~.]+)*@(?:[a-z0-9](?:[a-z0-9]*[a-z0-9])?\.)+(?:[a-z]{2,})\b/;
+
+var minLength = function minLength(path, errorType, key, minimun) {
+  var defaultValue = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : '';
+  return function (state) {
+    var value = (0, _lodash.default)(state, path, defaultValue) || defaultValue;
+    return (0, _utils.factoryValidationObj)(value.length >= minimun, errorType, key);
+  };
+};
+
+exports.minLength = minLength;
+
+var maxLength = function maxLength(path, errorType, key, max) {
+  var defaultValue = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : '';
+  return function (state) {
+    var value = (0, _lodash.default)(state, path, defaultValue) || defaultValue;
+    return (0, _utils.factoryValidationObj)(value.length <= max, errorType, key);
+  };
+};
+
+exports.maxLength = maxLength;
+
+var required = function required(path, errorType, key) {
+  return function (state) {
+    return (0, _utils.factoryValidationObj)((0, _lodash.default)(state, path), errorType, key);
+  };
+};
+
+exports.required = required;
+
+var compareFields = function compareFields(path, errorType, key, otherFieldPath) {
+  return function (state) {
+    var fieldOne = (0, _lodash.default)(state, path);
+    var fieldTwo = (0, _lodash.default)(state, otherFieldPath);
+    return (0, _utils.factoryValidationObj)(fieldOne === fieldTwo, errorType, key);
+  };
+};
+
+exports.compareFields = compareFields;
+
+var isEmail = function isEmail(path, errorType, key, _) {
+  var defaultValue = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : '';
+  return function (state) {
+    var value = (0, _lodash.default)(state, path, defaultValue) || defaultValue;
+    return (0, _utils.factoryValidationObj)(emailRegex.test(value), errorType, key);
+  };
+};
+
+exports.isEmail = isEmail;
+
+var regex = function regex(path, errorType, key, expresion) {
+  var defaultValue = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : '';
+  return function (state) {
+    var value = (0, _lodash.default)(state, path, defaultValue) || defaultValue;
+    return (0, _utils.factoryValidationObj)(expresion.test(value), errorType, key);
+  };
+};
+
+exports.regex = regex;
+
+/***/ }),
+
 /***/ "./node_modules/value-equal/index.js":
 /*!*******************************************!*\
   !*** ./node_modules/value-equal/index.js ***!
@@ -65860,16 +67255,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
-/* harmony import */ var reactstrap__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! reactstrap */ "./node_modules/reactstrap/es/index.js");
-/* harmony import */ var _y0c_react_datepicker__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @y0c/react-datepicker */ "./node_modules/@y0c/react-datepicker/lib/index.js");
-/* harmony import */ var _y0c_react_datepicker__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_y0c_react_datepicker__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _y0c_react_datepicker_assets_styles_calendar_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @y0c/react-datepicker/assets/styles/calendar.scss */ "./node_modules/@y0c/react-datepicker/assets/styles/calendar.scss");
-/* harmony import */ var _y0c_react_datepicker_assets_styles_calendar_scss__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_y0c_react_datepicker_assets_styles_calendar_scss__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var react_country_region_selector__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-country-region-selector */ "./node_modules/react-country-region-selector/dist/rcrs.es.js");
-/* harmony import */ var _views_Frontend_Frontend__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../views/Frontend/Frontend */ "./resources/js/views/Frontend/Frontend.jsx");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
+/* harmony import */ var reactstrap__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! reactstrap */ "./node_modules/reactstrap/es/index.js");
+/* harmony import */ var _y0c_react_datepicker__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @y0c/react-datepicker */ "./node_modules/@y0c/react-datepicker/lib/index.js");
+/* harmony import */ var _y0c_react_datepicker__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_y0c_react_datepicker__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _y0c_react_datepicker_assets_styles_calendar_scss__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @y0c/react-datepicker/assets/styles/calendar.scss */ "./node_modules/@y0c/react-datepicker/assets/styles/calendar.scss");
+/* harmony import */ var _y0c_react_datepicker_assets_styles_calendar_scss__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_y0c_react_datepicker_assets_styles_calendar_scss__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _views_Frontend_BookingForm__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../views/Frontend/BookingForm */ "./resources/js/views/Frontend/BookingForm.jsx");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
@@ -65902,8 +67298,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+ // Validation
+// import useValitedForm from 'react-valida-hook'
 
-
+ // import FrontendView from "../views/Frontend/Frontend";
 
 var Frontend =
 /*#__PURE__*/
@@ -65997,6 +67395,13 @@ function (_React$Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this), "showbookingform", function () {
+      var roomdetails = _this.state.roomdetails;
+
+      _this.setState({
+        hotel_id: _this.state.roomdetails[0].hotel_id,
+        'room_id': _this.state.roomdetails[0].room_id
+      });
+
       _this.setState({
         modal: true
       });
@@ -66017,10 +67422,38 @@ function (_React$Component) {
       console.log(reservationdata);
     });
 
-    _defineProperty(_assertThisInitialized(_this), "bookNow", function (data) {});
+    _defineProperty(_assertThisInitialized(_this), "formviewStatus", function (event) {
+      event.preventDefault();
+
+      if (event.target.dataset.showform == 'close') {
+        _this.setState({
+          modal: false
+        });
+      }
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "clearForm", function () {
+      _this.setState({
+        toDate: '',
+        fromDate: '',
+        errors: false,
+        hoteldata: false,
+        roomdetails: false,
+        modal: false,
+        hotel_id: '',
+        room_id: '',
+        first_name: '',
+        last_name: '',
+        address: '',
+        city: '',
+        state: '',
+        phone: '',
+        fax: '',
+        email: ''
+      });
+    });
 
     _this.state = {
-      clientToken: '',
       room_types: [],
       roomType: '',
       toDate: '',
@@ -66033,8 +67466,6 @@ function (_React$Component) {
       country: '',
       hotel_id: '',
       room_id: '',
-      check_in: '',
-      check_out: '',
       first_name: '',
       last_name: '',
       address: '',
@@ -66064,9 +67495,10 @@ function (_React$Component) {
     key: "renderRoomTypes",
     value: function renderRoomTypes() {
       // console.log(this.state.room_types);
-      return this.state.room_types.map(function (roomType) {
+      return this.state.room_types.map(function (roomType, key) {
         return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("option", {
-          value: roomType.id
+          value: roomType.id,
+          key: key
         }, roomType.name);
       });
     }
@@ -66125,8 +67557,6 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this5 = this;
-
       var _this$props = this.props,
           classes = _this$props.classes,
           rest = _objectWithoutProperties(_this$props, ["classes"]);
@@ -66136,7 +67566,13 @@ function (_React$Component) {
           errors = _this$state.errors,
           hoteldata = _this$state.hoteldata,
           roomdetails = _this$state.roomdetails,
-          country = _this$state.country;
+          country = _this$state.country,
+          hotel_id = _this$state.hotel_id,
+          room_id = _this$state.room_id,
+          fromDate = _this$state.fromDate,
+          toDate = _this$state.toDate; // const { formData, validation, validateForm, getData } = formValidation
+      // console.log(validation);
+
       return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "pageContent"
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
@@ -66165,7 +67601,7 @@ function (_React$Component) {
         className: "control-label"
       }, "Please Select your dates: "), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "clearfix"
-      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_y0c_react_datepicker__WEBPACK_IMPORTED_MODULE_5__["RangeDatePicker"], {
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_y0c_react_datepicker__WEBPACK_IMPORTED_MODULE_6__["RangeDatePicker"], {
         onChange: this.onChange
       })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "form-group"
@@ -66176,6 +67612,7 @@ function (_React$Component) {
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("select", {
         id: "room_type",
         name: "room_type",
+        className: "custom-select",
         onChange: this.setRoomType
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("option", null, "Please Select Room Type"), this.renderRoomTypes()))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "form-group"
@@ -66185,7 +67622,7 @@ function (_React$Component) {
       }, "Check Availability")))))), hoteldata ? react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "col-sm-4"
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("ul", {
-        className: "list-group list-group-flush"
+        className: "list-group list-group-flush clickable"
       }, this.displayRooms())) : null, roomdetails ? react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "col-sm-4"
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("ul", {
@@ -66193,28 +67630,21 @@ function (_React$Component) {
       }, this.displayRoomDetails()), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
         className: "btn btn-primary btn-small",
         onClick: this.showbookingform
-      }, "Book Now")) : null)), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["Modal"], {
+      }, "Book Now")) : null)), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_5__["Modal"], {
         isOpen: this.state.modal,
         className: this.props.className,
         backdrop: "static"
-      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["ModalHeader"], null, "Modal title"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["ModalBody"], null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-        className: "form-group"
-      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", {
-        className: "control-label"
-      }, "Country"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_country_region_selector__WEBPACK_IMPORTED_MODULE_7__["CountryDropdown"], {
-        valueType: "short",
-        value: country,
-        onChange: function onChange(val) {
-          return _this5.selectCountry(val);
-        },
-        classes: "form-control"
-      }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["ModalFooter"], null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["Button"], {
-        color: "primary",
-        onClick: this.makeReservation
-      }, "Book Now"), ' ', react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["Button"], {
-        color: "secondary",
-        onClick: this.closeform
-      }, "Cancel"))));
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_views_Frontend_BookingForm__WEBPACK_IMPORTED_MODULE_8__["default"], {
+        formstatus: this.formviewStatus,
+        hotelId: hotel_id,
+        roomId: room_id,
+        checkIn: fromDate,
+        checkOut: toDate
+      })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+        id: "clearForm",
+        className: "hidden clearform",
+        onClick: this.clearForm
+      }));
     }
   }]);
 
@@ -66364,10 +67794,10 @@ function (_React$Component) {
 
 /***/ }),
 
-/***/ "./resources/js/views/Frontend/Frontend.jsx":
-/*!**************************************************!*\
-  !*** ./resources/js/views/Frontend/Frontend.jsx ***!
-  \**************************************************/
+/***/ "./resources/js/views/Frontend/BookingForm.jsx":
+/*!*****************************************************!*\
+  !*** ./resources/js/views/Frontend/BookingForm.jsx ***!
+  \*****************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -66375,16 +67805,268 @@ function (_React$Component) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_valida_hook__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-valida-hook */ "./node_modules/react-valida-hook/lib/index.js");
+/* harmony import */ var react_valida_hook__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_valida_hook__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var reactstrap__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! reactstrap */ "./node_modules/reactstrap/es/index.js");
+/* harmony import */ var react_country_region_selector__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-country-region-selector */ "./node_modules/react-country-region-selector/dist/rcrs.es.js");
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
-function Frontend(props) {
-  var classes = props.classes;
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "well"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "I am Frontend"));
+
+
+
+
+
+var initialState = {
+  first_name: '',
+  last_name: '',
+  email: '',
+  address: '',
+  city: '',
+  phone: '',
+  fax: ''
+};
+var validations = [{
+  name: 'first_name',
+  type: 'required',
+  stateMap: 'first_name'
+}, {
+  name: 'last_name',
+  type: 'required',
+  stateMap: 'last_name'
+}, {
+  name: 'email',
+  type: 'required',
+  stateMap: 'email'
+}, {
+  name: 'email',
+  type: 'isEmail',
+  stateMap: 'email'
+}, {
+  name: 'address',
+  type: 'required',
+  stateMap: 'address'
+}, {
+  name: 'city',
+  type: 'required',
+  stateMap: 'city'
+}, {
+  name: 'phone',
+  type: 'required',
+  stateMap: 'phone'
+}, {
+  name: 'fax',
+  type: 'required',
+  stateMap: 'fax'
+}];
+
+function BookingForm(props) {
+  var _useValitedForm = react_valida_hook__WEBPACK_IMPORTED_MODULE_3___default()(initialState, validations),
+      _useValitedForm2 = _slicedToArray(_useValitedForm, 4),
+      formData = _useValitedForm2[0],
+      validation = _useValitedForm2[1],
+      validateForm = _useValitedForm2[2],
+      getData = _useValitedForm2[3];
+
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+      _useState2 = _slicedToArray(_useState, 2),
+      countrycode = _useState2[0],
+      setCountry = _useState2[1];
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+      _useState4 = _slicedToArray(_useState3, 2),
+      validcountry = _useState4[0],
+      setCountryValid = _useState4[1];
+
+  var submit = function submit(event) {
+    event.preventDefault();
+    var valid = validateForm();
+
+    if (valid) {
+      var data = getData(),
+          error = false;
+
+      if (!props.hotelId) {
+        error = true;
+        alert('Missing Hotel Information. Please Reload page');
+      }
+
+      if (!props.roomId) {
+        error = true;
+        alert('Invalid Room Information. Please Reload page');
+      }
+
+      if (!props.checkIn) {
+        error = true;
+        alert('Invalid Check-in Date. Please Reload page');
+      }
+
+      if (!props.checkOut) {
+        error = true;
+        alert('Invalid Check-out Date. Please Reload page');
+      }
+
+      if (countrycode) {
+        setCountryValid(false);
+      } else {
+        error = true;
+        setCountryValid(true);
+        alert('Please Select Country');
+      }
+
+      if (!error) {
+        data.hotel_id = props.hotelId;
+        data.room_id = props.roomId;
+        data.check_in = props.checkIn;
+        data.check_out = props.checkOut;
+        data.country = countrycode;
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/api/v1/makereservation', data).then(function (response) {
+          // redirect to the homepage
+          if (response.status == 200) {
+            var _data = response.data;
+
+            if (_data.success) {
+              alert(_data.message);
+              var elef = document.getElementById('clearForm');
+
+              if (typeof elef.click == 'function') {
+                elef.click();
+              } else if (typeof elef.onclick == 'function') {
+                elef.onclick();
+              }
+            } else {
+              alert(_data.message);
+            }
+          } else {
+            alert('failed to process');
+          }
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
+    }
+  };
+  /*const selectCountry = (country) => {
+    // formData.country.input = country;
+    setCountry(country);
+    formData.country = country;
+    return countryList.map((country, key) => {
+      return (
+          <option value={country.code}>
+              { country.name } 
+          </option>      
+      );
+    })
+  }*/
+
+
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+    noValidate: true,
+    onSubmit: submit
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["ModalHeader"], null, "Make Reservation"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["ModalBody"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["FormGroup"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+    htmlFor: "first-name",
+    className: "control-label"
+  }, "First name:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", _extends({
+    name: "first_name",
+    id: "first-name"
+  }, formData.first_name.input, {
+    className: validation.errors.first_name.join('') ? 'form-control is-invalid' : 'form-control'
+  })), validation.errors.first_name.join('') ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "invalid-feedback"
+  }, validation.errors.first_name.join(', ')) : null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["FormGroup"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+    htmlFor: "last-name",
+    className: "control-label"
+  }, "Last name:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", _extends({
+    name: "last_name",
+    id: "last-name"
+  }, formData.last_name.input, {
+    className: validation.errors.last_name.join('') ? 'form-control is-invalid' : 'form-control'
+  })), validation.errors.last_name.join('') ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "invalid-feedback"
+  }, validation.errors.last_name.join(', ')) : null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["FormGroup"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+    htmlFor: "address",
+    className: "control-label"
+  }, "Address:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", _extends({
+    name: "address",
+    id: "address"
+  }, formData.address.input, {
+    className: validation.errors.address.join('') ? 'form-control is-invalid' : 'form-control'
+  })), validation.errors.address.join('') ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "invalid-feedback"
+  }, validation.errors.address.join(', ')) : null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["FormGroup"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+    htmlFor: "email",
+    className: "control-label"
+  }, "Email:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", _extends({
+    name: "email",
+    id: "email"
+  }, formData.email.input, {
+    className: validation.errors.email.join('') ? 'form-control is-invalid' : 'form-control'
+  })), validation.errors.email.join('') ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "invalid-feedback"
+  }, validation.errors.email.join(', ')) : null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["FormGroup"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+    htmlFor: "city-name",
+    className: "control-label"
+  }, "City:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", _extends({
+    name: "city",
+    id: "city-name"
+  }, formData.city.input, {
+    className: validation.errors.city.join('') ? 'form-control is-invalid' : 'form-control'
+  })), validation.errors.city.join('') ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "invalid-feedback"
+  }, validation.errors.city.join(', ')) : null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["FormGroup"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+    htmlFor: "email",
+    className: "control-label"
+  }, "Country:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_country_region_selector__WEBPACK_IMPORTED_MODULE_5__["CountryDropdown"], {
+    valueType: "short",
+    value: countrycode,
+    onChange: function onChange(val) {
+      return setCountry(val);
+    },
+    classes: validcountry ? 'custom-select is-invalid' : 'custom-select'
+  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["FormGroup"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+    htmlFor: "phone-name",
+    className: "control-label"
+  }, "Phone:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", _extends({
+    name: "phone",
+    id: "phone-name"
+  }, formData.phone.input, {
+    className: validation.errors.phone.join('') ? 'form-control is-invalid' : 'form-control'
+  })), validation.errors.phone.join('') ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "invalid-feedback"
+  }, validation.errors.city.join(', ')) : null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["FormGroup"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+    htmlFor: "fax-name",
+    className: "control-label"
+  }, "Fax:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", _extends({
+    name: "fax",
+    id: "fax-name"
+  }, formData.fax.input, {
+    className: validation.errors.fax.join('') ? 'form-control is-invalid' : 'form-control'
+  })), validation.errors.fax.join('') ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "invalid-feedback"
+  }, validation.errors.fax.join(', ')) : null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["ModalFooter"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["Button"], {
+    color: "primary",
+    type: "submit"
+  }, "Book Now"), ' ', react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_4__["Button"], {
+    id: "closemodal",
+    color: "secondary",
+    onClick: props.formstatus,
+    "data-showform": "close"
+  }, "Cancel"))));
 }
 
-/* harmony default export */ __webpack_exports__["default"] = (Frontend);
+/* harmony default export */ __webpack_exports__["default"] = (BookingForm);
 
 /***/ }),
 

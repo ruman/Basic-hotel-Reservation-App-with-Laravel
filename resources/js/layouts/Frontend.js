@@ -1,6 +1,7 @@
 /* eslint-disable */
 import axios from 'axios';
 import React from "react";
+import ReactDOM from 'react-dom'
 import PropTypes from "prop-types";
 import { Switch, Route, Redirect, Link } from "react-router-dom";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, Label, Form, FormGroup } from 'reactstrap';
@@ -9,17 +10,17 @@ import { DatePicker, RangeDatePicker } from '@y0c/react-datepicker';
 
 import '@y0c/react-datepicker/assets/styles/calendar.scss';
 
-import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
 
-import FrontendView from "../views/Frontend/Frontend";
-
+// Validation
+// import useValitedForm from 'react-valida-hook'
+import BookingForm from '../views/Frontend/BookingForm';
+// import FrontendView from "../views/Frontend/Frontend";
 
 class Frontend extends React.Component {
   constructor(props) {
     super(props);
     // this.handleSubmit = this.handleSubmit.bind(this);    
     this.state = {
-      clientToken: '',
       room_types: [],
       roomType: '',
       toDate: '',
@@ -32,8 +33,6 @@ class Frontend extends React.Component {
       country: '',
       hotel_id:'',
       room_id:'',
-      check_in:'',
-      check_out:'',
       first_name:'',
       last_name:'',
       address:'',
@@ -57,9 +56,9 @@ class Frontend extends React.Component {
 
   renderRoomTypes() {
     // console.log(this.state.room_types);
-     return this.state.room_types.map(roomType => {
+     return this.state.room_types.map((roomType, key) => {
         return (
-            <option value={roomType.id}>
+            <option value={roomType.id} key={key}>
                 { roomType.name } 
             </option>      
         );
@@ -166,6 +165,8 @@ class Frontend extends React.Component {
   }
 
   showbookingform = () => {
+    let roomdetails = this.state.roomdetails;
+    this.setState({hotel_id:this.state.roomdetails[0].hotel_id, 'room_id':this.state.roomdetails[0].room_id });
     this.setState({modal:true});
   }
 
@@ -182,13 +183,39 @@ class Frontend extends React.Component {
     console.log(reservationdata);
   }
 
-  bookNow = (data) => {
-    
+  formviewStatus = (event) => {
+    event.preventDefault();
+    if(event.target.dataset.showform == 'close'){
+      this.setState({modal:false})
+    }
+  }
+
+  clearForm = () => {
+    this.setState({
+      toDate: '',
+      fromDate: '',
+      errors: false,
+      hoteldata: false,
+      roomdetails: false,
+      modal:false,
+      hotel_id:'',
+      room_id:'',
+      first_name:'',
+      last_name:'',
+      address:'',
+      city:'',
+      state:'',
+      phone:'',
+      fax: '',
+      email:''
+    })
   }
 
   render() {
     const { classes, ...rest } = this.props;
-    const { room_types, errors, hoteldata, roomdetails, country } = this.state;
+    const { room_types, errors, hoteldata, roomdetails, country, hotel_id, room_id, fromDate, toDate } = this.state;
+    // const { formData, validation, validateForm, getData } = formValidation
+    // console.log(validation);
     return (
       <div className="pageContent">
         <div className="container">
@@ -214,7 +241,7 @@ class Frontend extends React.Component {
                        <div className="form-group">
                           <label className="control-label">Please Select your dates: </label>
                           <div className="clearfix">
-                            <select id="room_type" name="room_type" onChange={this.setRoomType}>
+                            <select id="room_type" name="room_type" className="custom-select" onChange={this.setRoomType}>
                               <option>Please Select Room Type</option>
                               {this.renderRoomTypes()}
                             </select>
@@ -229,7 +256,7 @@ class Frontend extends React.Component {
               </div>
               {hoteldata ? (
                 <div className="col-sm-4">
-                  <ul className="list-group list-group-flush">
+                  <ul className="list-group list-group-flush clickable">
                     {this.displayRooms()}
                   </ul>
                 </div>
@@ -247,18 +274,9 @@ class Frontend extends React.Component {
             </div>
         </div>
         <Modal isOpen={this.state.modal} className={this.props.className} backdrop="static">
-          <ModalHeader>Modal title</ModalHeader>
-          <ModalBody>
-            <div className="form-group">
-              <label className="control-label">Country</label>
-              <CountryDropdown valueType="short" value={country} onChange={(val) => this.selectCountry(val)} classes="form-control" />
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={this.makeReservation}>Book Now</Button>{' '}
-            <Button color="secondary" onClick={this.closeform}>Cancel</Button>
-          </ModalFooter>
+          <BookingForm formstatus={this.formviewStatus} hotelId={hotel_id} roomId={room_id} checkIn={fromDate} checkOut={toDate} />
         </Modal>
+        <button id="clearForm" className="hidden clearform" onClick={this.clearForm} />
       </div>
     );
   }

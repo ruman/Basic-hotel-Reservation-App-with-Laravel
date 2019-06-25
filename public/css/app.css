@@ -11141,3 +11141,12 @@ a.text-dark:focus {
   border-color: #FFF;
 }
 
+.clearform {
+  display: none;
+  opacity: 0;
+}
+
+.clickable {
+  cursor: pointer;
+}
+

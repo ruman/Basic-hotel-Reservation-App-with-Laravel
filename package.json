@@ -37,6 +37,8 @@
         "sass": "^1.15.2"
     },
     "dependencies": {
-        "react-country-region-selector": "^1.4.3"
+        "react-country-region-selector": "^1.4.3",
+        "react-valida-hook": "0.0.9",
+        "react-validation": "^3.0.7"
     }
 }

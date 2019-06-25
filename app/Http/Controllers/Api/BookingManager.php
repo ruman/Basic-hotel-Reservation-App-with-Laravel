@@ -104,11 +104,13 @@ class BookingManager extends Controller
     	// dd($customerdata);
     	$createcustomer = Customers::create($customerdata);
     	if($createcustomer){
+    		$checkin = Carbon::create($data['check_in']);
+    		$checkout = Carbon::create($data['check_out']);
     		$reservationdata = [
     			'hotel_id'	=> $data['hotel_id'],
     			'room_id'	=> $data['room_id'],
-    			'check_in'	=> $data['check_in'],
-    			'check_out'	=> $data['check_out'],
+    			'check_in'	=> $checkin,
+    			'check_out'	=> $checkout,
     			'customer_id'	=> $createcustomer->id,
     		];
     		$makereservation = Bookings::create($reservationdata);
