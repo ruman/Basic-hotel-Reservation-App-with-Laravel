@@ -16,4 +16,15 @@ class Rooms extends Model
     	'images'
     ];
 
+
+    public function room_type()
+    {
+    	return $this->belongsTo(RoomTypes::class);
+    }
+
+    public function room_capacity()
+    {
+    	return $this->belongsTo(RoomCapacity::class);
+    }
+
 }

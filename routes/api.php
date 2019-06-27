@@ -28,4 +28,5 @@ Route::prefix('v1')->group(function(){
 	Route::get('room_types', 'Api\BookingManager@room_types');
 	Route::post('getrooms', 'Api\BookingManager@getrooms');
 	Route::post('makereservation', 'Api\BookingManager@makereservation');
+	Route::post('resquest_reservation_details', 'Api\BookingManager@reservation_details');
 });

@@ -14,6 +14,7 @@ use App\Rooms;
 use App\HotelData;
 use App\Hotels;
 use App\RoomPrices;
+use App\RoomCapacity;
 use App\Bookings;
 use App\Customers;
 
@@ -59,7 +60,23 @@ class BookingManager extends Controller
     			foreach ($result as &$hoteldata) {
     				$hoteldata->rate = $hoteldata->price->rate;
     				$hoteldata->hotel_name = $hoteldata->hotel->name;
+    				if($hoteldata->hotel->image)
+    					$hoteldata->hotel_image = asset('/images/'.$hoteldata->hotel_id.'/'.$hoteldata->hotel->image);
+    				else
+    					$hoteldata->hotel_image = false;
+
     				$hoteldata->room_name = $hoteldata->room->name;
+    				$roomimages = $hoteldata->room->images;
+    				if($roomimages && !empty($roomimages)){
+    					$listroomimages = [];
+    					$roomimages = json_decode( $roomimages );
+    					foreach ($roomimages as $image) {
+    						$listroomimages[] = asset('/storage/rooms/'.$hoteldata->room_id.'/'.$image);
+    					}
+    					$hoteldata->room_images = $listroomimages;
+    				}else {
+    					$hoteldata->room_images = false;
+    				}
     				unset($hoteldata->hotel);
     				unset($hoteldata->room);
     				unset($hoteldata->price);
@@ -117,6 +134,7 @@ class BookingManager extends Controller
     		if($makereservation){
     			return response()->json([
 					'success'=> true,
+					'id'	=> $makereservation->id,
 					'message'=> 'Reservation Success. Booking ID: '.$makereservation->id
 				]);
     		}
@@ -127,5 +145,59 @@ class BookingManager extends Controller
 			'message'=> 'Reservation Failed. Please try again later.'
 		]);
 
+    }
+
+    public function reservation_details(Request $request)
+    {
+    	$id = $request->input('id');
+    	$reservation = Bookings::find($id);
+    	if($reservation){
+    		$hoteldata = HotelData::where('room_id','=', $reservation->room->id)
+    						->where('hotel_id', '=', $reservation->hotel->id)
+    						->first();
+    						$roomprice = RoomPrices::where('id','=', $hoteldata->price_id)->first();
+    		$roomtype = RoomTypes::where('id', $reservation->room->room_type_id)->first();
+    		$roomcapacity = RoomCapacity::where('id', $reservation->room->room_capacity_id)->first();
+    		// dd($hoteldata);
+    		if($hoteldata->hotel->image)
+				$hoteldata->hotel_image = asset('/images/'.$hoteldata->hotel_id.'/'.$hoteldata->hotel->image);
+
+			$roomimages = $hoteldata->room->images;
+			$listroomimages = [];
+			if($roomimages && !empty($roomimages)){
+				$roomimages = json_decode( $roomimages );
+				foreach ($roomimages as $image) {
+					$listroomimages[] = asset('/storage/rooms/'.$hoteldata->room_id.'/'.$image);
+				}
+			}
+			$customer = Customers::find($reservation->customer_id)->first();
+    		$data = [
+    			'hotel_name'		=> $reservation->hotel->name,
+    			'hotel_image'		=> $hoteldata->hotel_image,
+    			'room_name'			=> $reservation->room->name,
+    			'room_images'		=> json_encode($listroomimages),
+    			'room_type'			=> $roomtype->name,
+    			'price'				=> $roomprice->rate,
+    			'room_capacity'		=> $roomcapacity->name,
+    			'customer_info'		=> [
+    				'name'			=> $customer->first_name.' '.$customer->last_name,
+    				'email'			=> $customer->email,
+    				'address'		=> $customer->address,
+    				'city'			=> $customer->city,
+    				'country'		=> $customer->country,
+    				'phone'			=> $customer->phone,
+    				'fax'			=> $customer->fax,
+    			]
+    		];
+    		return response()->json([
+    			'success'	=> true,
+    			'result'	=> $data
+    		]);
+    	}else {
+    		return response()->json([
+    			'success'	=> false,
+    			'message'	=> 'Reservation not found!!!'
+    		]);
+    	}
     }
 }

@@ -23,7 +23,7 @@ class Bookings extends Model
 
     public function room()
     {
-    	return $this->belongsTo(Hotels::class);
+    	return $this->belongsTo(Rooms::class);
     }
 
     public function customer()

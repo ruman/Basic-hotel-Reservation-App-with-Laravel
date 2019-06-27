@@ -45,9 +45,10 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('rooms/{id}/imageupload', 'RoomsController@imageupload');
 		Route::delete('rooms/{id}/imageupload', 'RoomsController@deleteimage');
 
-		Route::resource('roomcapacity', 'RoomCapacityController', ['except' => ['show']]);
-		Route::resource('roomtypes', 'RoomTypesController', ['except' => ['show']]);
-		Route::resource('roomprices', 'RoomPricesController', ['except' => ['show']]);
+		Route::resource('roomcapacity', 'RoomCapacityController', ['except' => ['show', 'delete']]);
+		Route::resource('roomtypes', 'RoomTypesController', ['except' => ['show', 'delete']]);
+		Route::resource('roomprices', 'RoomPricesController', ['except' => ['show', 'delete']]);
+		Route::resource('bookings', 'BookingManagerController', ['except' => ['show', 'delete']]);
 	});
 });
 
