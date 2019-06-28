@@ -7,6 +7,8 @@ use App\HotelData;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use Carbon\Carbon;
+
 class BookingManagerController extends Controller
 {
     /**
@@ -41,7 +43,12 @@ class BookingManagerController extends Controller
             }
         }
 
-        return view('admin.bookings.index')->with(compact('bookings'));
+        $date = [
+            'start' => 1561730192,
+            'end' => 1561734192,
+        ];
+
+        return view('admin.bookings.index')->with(compact('bookings', 'date'));
     }
 
     /**

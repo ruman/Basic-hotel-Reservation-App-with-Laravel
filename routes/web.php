@@ -48,7 +48,14 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('roomcapacity', 'RoomCapacityController', ['except' => ['show', 'delete']]);
 		Route::resource('roomtypes', 'RoomTypesController', ['except' => ['show', 'delete']]);
 		Route::resource('roomprices', 'RoomPricesController', ['except' => ['show', 'delete']]);
-		Route::resource('bookings', 'BookingManagerController', ['except' => ['show', 'delete']]);
+		Route::resource('bookings', 'BookingManagerController', ['except' => ['show', 'creat','store']]);
+
+		Route::get('tmpls/{path?}', function(Request $request){
+			$path = $request->getPathInfo();
+			$path = str_replace('/admin/tmpls/', '', $path);
+			$path = str_replace('.html', '', $path);
+			return view('admin.tmpls.'.$path);
+		});
 	});
 });
 

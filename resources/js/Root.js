@@ -11,7 +11,6 @@ import {
 
 // core components
 import FrontEnd from "./layouts/Frontend";
-import Login from "./views/Auth/Login";
 
 const hist = createBrowserHistory();
 
@@ -19,18 +18,18 @@ ReactDOM.render(
   <Router history={hist}>
     <Switch>
       <Route exact path="/" component={FrontEnd} />
-      <Route path="/login" component={Login} />
-      <Route path="/register" component={Register} />
       <Route component={Page404} />
     </Switch>
   </Router>,
   document.getElementById("root")
 );
 
-function Register(){
-	return <h2>Register Page</h2>;
-}
-
 function Page404(){
-	return <h1 className="error-title error danger">Page Not Found!!!</h1>
+	return <div className="container">
+          <div className="row">
+            <div className="col-sm-12">
+              <h1 className="error-title error-danger">Page Not Found!!!</h1>
+            </div>
+          </div>
+        </div>
 }

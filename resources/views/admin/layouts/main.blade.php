@@ -16,6 +16,9 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
+    
+    @yield('pageHeader')
+
     <style type="text/css">
         @yield('inlinestyle')
     </style>
