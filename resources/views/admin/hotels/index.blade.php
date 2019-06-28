@@ -70,7 +70,7 @@
                                             <div class="clearfix tools">
                                                 <button type="button" class="btn btn-danger btn-sm">{{__('Delete') }}</button>
                                                 <button type="button" class="btn btn-primary btn-sm mr-left-10 editHotel">{{ __('Edit') }}</button>
-                                                <a href="{{ route('rooms') }}" class="btn btn-info btn-sm mr-left-10">{{__('Rooms') }}</a>
+                                                <a href="{{ route('hotel.rooms', $hotel->id ) }}" class="btn btn-info btn-sm mr-left-10">{{__('Rooms') }}</a>
                                                 <a href="{{ route('hotel.show', $hotel->id) }}" class="btn btn-success btn-sm mr-left-10">{{__('View') }}</a>
                                             </div>
                                         </td>

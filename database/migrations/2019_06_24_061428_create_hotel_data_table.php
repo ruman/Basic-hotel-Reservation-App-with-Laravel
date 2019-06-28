@@ -21,7 +21,7 @@ class CreateHotelDataTable extends Migration
             $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');
             $table->bigInteger('price_id')->unsigned();
             $table->foreign('price_id')->references('id')->on('room_prices')->onDelete('cascade');
-            $table->text('price_description');
+            $table->text('price_description')->nullable();
             $table->timestamp('date_start')->nullable();
             $table->timestamp('date_end')->nullable();
             $table->timestamps();

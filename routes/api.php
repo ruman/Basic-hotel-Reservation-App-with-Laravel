@@ -23,6 +23,8 @@ Route::prefix('v1')->group(function(){
 		Route::get('getroomtypes', 'Api\BookingManager@room_types');
 		Route::post('listrooms', 'Api\BookingManager@getrooms');
 		Route::post('createreservation', 'Api\BookingManager@makereservation');
+
+		Route::post('hotels/{id}/rooms', 'Admin\HotelController@store_room');
 	});
 
 	Route::get('room_types', 'Api\BookingManager@room_types');

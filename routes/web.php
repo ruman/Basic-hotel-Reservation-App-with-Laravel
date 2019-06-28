@@ -35,6 +35,9 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('hotels', 'HotelController@store');
 		Route::post('hotels/{id}/imageupload', 'HotelController@imageupload');
 
+		Route::get('hotels/{id}/rooms', 'HotelController@rooms')->name('hotel.rooms');
+		Route::post('hotels/{id}/rooms', 'HotelController@store_room');
+
 		Route::get('rooms', 'RoomsController@index')->name('rooms');
 		Route::get('rooms/{id}/edit', 'RoomsController@edit')->name('room.edit');
 		Route::get('rooms/{id}/preview', 'RoomsController@show')->name('room.show');

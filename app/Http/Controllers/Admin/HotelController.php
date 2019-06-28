@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Hotels;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use PragmaRX\Countries\Package\Countries;
 
 use App\Http\Requests\HotelCreateRequest;
 use App\Http\Requests\HotelImageUploadRequest;
+
+use App\Hotels;
+use App\Rooms;
+use App\RoomPrices;
+use App\HotelData;
 
 class HotelController extends Controller
 {
@@ -20,9 +24,10 @@ class HotelController extends Controller
 
     public $pagination;
 
-    public function __construct(Hotels $hotels)
+    public function __construct(Hotels $hotels, HotelData $hoteldata)
     {
         $this->hotels = $hotels;
+        $this->hoteldata = $hoteldata;
         $this->pagination   = env('PAGINATION', 50);
     }
 
@@ -38,6 +43,18 @@ class HotelController extends Controller
             echo $city['name'].'<br/><br/>';
         }*/
         return view('admin.hotels.index')->with(compact('hotels','countries'));
+    }
+
+
+    public function rooms(Request $request, $id)
+    {
+        $hotel = $this->hotels->find($id);
+        $hotelrooms = $this->hotels->find($id)->rooms;
+        $rooms = Rooms::all();
+        // $room_types = RoomTypes::select('name','id')->get();
+        // $room_capacities = RoomCapacity::select('name','id')->get();
+        $room_prices = RoomPrices::select('id', 'name','rate')->get();
+        return view('admin.hotels.rooms')->with(compact('hotel','rooms', 'hotelrooms', 'room_prices'));
     }
 
     /**
@@ -85,6 +102,29 @@ class HotelController extends Controller
                 'phone'     => $result->phone,
                 'email'     => $result->email,
                 'image'     => $imageurl
+            ]
+        ]);
+    }
+
+
+    public function store_room(Request $request, $id)
+    {
+        $payload = $request->except('_token');
+        $result = $this->hoteldata->create($payload);
+
+        return response()->json([
+            'success'   => true,
+            'data'   => [
+                'id'        => $result->id,
+                'room_id'      => $result->room_id,
+                'room_name'   => $result->room->name,
+                'type_id'      => $result->room->room_type_id,
+                'room_type'     => $result->room->room_type->name,
+                'room_capacity_id'   => $result->room->capacity_id,
+                'room_capacity'     => $result->room->room_capacity->name,
+                'date_start'     => $result->date_start,
+                'date_end'     => $result->date_end,
+                'availability'     => $result->availability
             ]
         ]);
     }

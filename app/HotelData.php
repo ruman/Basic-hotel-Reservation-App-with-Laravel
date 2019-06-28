@@ -14,8 +14,9 @@ class HotelData extends Model
     	'hotel_id',
     	'room_id',
     	'price_id',
-    	'state_date',
-    	'end_date'
+    	'date_start',
+    	'date_end',
+    	'availability'
     ];
 
     public function hotel(){

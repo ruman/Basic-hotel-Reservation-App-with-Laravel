@@ -23,15 +23,15 @@ class Hotels extends Model
     ];
 
     public function rooms(){
-    	return $this->hasMany(Rooms::class);
+    	return $this->hasMany(HotelData::class, 'hotel_id', 'id');
     }
 
     public function prices(){
-    	return $this->hasMany(RoomPrices::class);
+    	return $this->belongsTo(RoomPrices::class);
     }
 
     public function bookings(){
-    	return $this->hasMany(Bookings::class);
+    	return $this->belongsTo(Bookings::class);
     }
 
 }
