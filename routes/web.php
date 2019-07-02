@@ -26,14 +26,17 @@ Route::get('/admin', function () {
 Route::group(['middleware' => ['auth']], function () {
 	Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 		Route::get('dashboard', 'HomeController@index')->name('dashboard');
+		Route::group(['prefix' => 'hotels'], function () {
+			Route::get('/', 'HotelController@index')->name('hotels');
+			Route::get('{id}/edit', 'HotelController@edit')->name('hotel.edit');
+			Route::get('{id}/preview', 'HotelController@show')->name('hotel.show');
+			Route::post('delete/{id}', 'HotelController@destroy');
+			Route::post('{id}', 'HotelController@update');
+			Route::post('/', 'HotelController@store');
+			Route::post('{id}/imageupload', 'HotelController@imageupload');
 
-		Route::get('hotels', 'HotelController@index')->name('hotels');
-		Route::get('hotels/{id}/edit', 'HotelController@edit')->name('hotel.edit');
-		Route::get('hotels/{id}/preview', 'HotelController@show')->name('hotel.show');
-		Route::post('hotels/delete/{id}', 'HotelController@destroy');
-		Route::post('hotels/{id}', 'HotelController@update');
-		Route::post('hotels', 'HotelController@store');
-		Route::post('hotels/{id}/imageupload', 'HotelController@imageupload');
+			Route::get('getreservations', 'BookingManagerController@getallbookings');
+		});
 
 		Route::get('hotels/{id}/rooms', 'HotelController@rooms')->name('hotel.rooms');
 		Route::post('hotels/{id}/rooms', 'HotelController@store_room');
@@ -51,7 +54,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('roomcapacity', 'RoomCapacityController', ['except' => ['show', 'delete']]);
 		Route::resource('roomtypes', 'RoomTypesController', ['except' => ['show', 'delete']]);
 		Route::resource('roomprices', 'RoomPricesController', ['except' => ['show', 'delete']]);
-		Route::resource('bookings', 'BookingManagerController', ['except' => ['show', 'creat','store']]);
+		Route::resource('bookings', 'BookingManagerController', ['except' => ['show', 'create','store']]);
 
 		Route::get('tmpls/{path?}', function(Request $request){
 			$path = $request->getPathInfo();

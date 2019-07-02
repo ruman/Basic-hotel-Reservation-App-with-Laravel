@@ -26,6 +26,11 @@ class Bookings extends Model
     	return $this->belongsTo(Rooms::class);
     }
 
+    public function hoteldata()
+    {
+        return $this->belongsTo(HotelData::class, 'hotel_id', 'room_id');
+    }
+
     public function customer()
     {
     	return $this->belongsTo(Customers::class);

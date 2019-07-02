@@ -11909,15 +11909,55 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+/*document.addEventListener('DOMContentLoaded', function() {
+  var calendarEl = document.getElementById('calendar');
+  alert('loading...');
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    plugins: [ 'dayGrid', 'bootstrap' ],
+    timeZone: 'UTC',
+    themeSystem: 'bootstrap',
+    header: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    },
+    weekNumbers: true,
+    eventLimit: true, // allow "more" link when too many events
+    events: 'https://fullcalendar.io/demo-events.json'
+  });
+
+  calendar.render();
+});*/
+
 document.addEventListener('DOMContentLoaded', function () {
   var calendarEl = document.getElementById('calendar');
   var calendar = new _fullcalendar_core__WEBPACK_IMPORTED_MODULE_0__["Calendar"](calendarEl, {
-    plugins: [_fullcalendar_bootstrap__WEBPACK_IMPORTED_MODULE_3___default.a, _fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_1___default.a],
+    plugins: [_fullcalendar_bootstrap__WEBPACK_IMPORTED_MODULE_3___default.a, _fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_1___default.a, _fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_2___default.a],
     themSystem: 'bootstrap',
     header: {
       left: 'prev today',
       center: 'title',
       right: 'dayGridMonth,timeGridWeek next'
+    },
+    eventLimit: true,
+    // allow "more" link when too many events
+    events: 'hotels/getreservations',
+    eventClick: function eventClick(info) {
+      info.jsEvent.preventDefault();
+      var data = {};
+      data.hotel = info.event.hotel;
+      data.room = info.event.room;
+      data.rate = info.event.rate;
+      data.title = info.event.title;
+      console.log(info);
+    },
+    eventColor: '#7AC35F',
+    eventTextColor: '#FFF',
+    eventTimeFormat: {
+      hour: 'numeric',
+      minute: '2-digit',
+      omitZeroMinute: false,
+      meridiem: 'narrow'
     }
   });
   calendar.render();
@@ -11932,7 +11972,7 @@ document.addEventListener('DOMContentLoaded', function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /var/www/nginx/hotelapp/clientapp/resources/js/admin/calendar.js */"./resources/js/admin/calendar.js");
+module.exports = __webpack_require__(/*! /var/www/hotelapp/clientapp/resources/js/admin/calendar.js */"./resources/js/admin/calendar.js");
 
 
 /***/ })

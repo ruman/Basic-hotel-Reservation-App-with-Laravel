@@ -1282,3 +1282,43 @@ Docs & License: https://fullcalendar.io/
   background: 0 0;
 }
 
+.fc-view-container .fc-content {
+  cursor: pointer;
+  color: #FFF;
+}
+
+.fc-view-container .fc-event {
+  margin-left: 78px;
+  margin-right: 78px;
+  padding-left: 28px;
+  padding-right: 28px;
+  text-overflow: ellipsis;
+  position: relative;
+  border-radius: 0;
+  border: none !important;
+}
+
+.fc-view-container .fc-event::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-style: solid;
+  width: 0;
+  height: 0;
+  border-width: 19px 25px 0 0;
+  border-color: #F8FAFC transparent transparent transparent;
+}
+
+.fc-view-container .fc-event::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border-style: solid;
+  width: 0;
+  height: 0;
+  border-width: 0 0 19px 25px;
+  border-color: transparent transparent #F8FAFC transparent;
+}
+

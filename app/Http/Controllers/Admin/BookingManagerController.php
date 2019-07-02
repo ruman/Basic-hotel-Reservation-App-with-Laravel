@@ -116,4 +116,41 @@ class BookingManagerController extends Controller
     {
         //
     }
+
+    public function getallbookings(Request $request)
+    {
+        $start = $request->input('start');
+        $end = $request->input('end');
+        if(isset($start) && isset($end)){
+
+            $result = $this->bookings->whereBetween('check_in', [$start, $end])->get();
+
+            if($result->count() > 0){
+                $data = [];
+                foreach ($result as $booking) {
+                    $data[] = [
+                        'id'        => $booking->id,
+                        'title'     => $booking->customer->first_name.' '.$booking->customer->last_name,
+                        // 'title'     => $booking->id,
+                        'start'     => Carbon::create($booking->check_in)->format('Y-m-d h:m:s'),
+                        'end'       => Carbon::create($booking->check_out)->format('Y-m-d h:m:s'),
+                        'hotel'    => $booking->hotel->name,
+                        'room'          => $booking->room->name,
+                        'rate'          => $booking->hoteldata->price->rate,
+                        /*'start'     => $booking->check_in,
+                        'end'       => $booking->check_out,*/
+                    ];
+                }
+                if(!empty($data)){
+                    return response()->json($data);
+                }
+            }
+
+        }
+
+        return response()->json([
+            'success'   => false,
+            'message'   => 'Failed to Process'
+        ]);
+    }
 }
