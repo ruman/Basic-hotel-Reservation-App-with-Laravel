@@ -179,6 +179,47 @@ class HotelController extends Controller
     }
 
     /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Hotels  $hotels
+     * @return \Illuminate\Http\Response
+     */
+    public function update_room(HotelCreateRequest $request, $id, $room_id)
+    {
+        $payload = $request->except('_token');
+        $result = $this->hoteldata
+                    ->where('hotel_id', $id)
+                    ->where('room_id', $room_id)
+                    ->update($payload);
+        $result = $this->hoteldata
+                    ->where('hotel_id', $id)
+                    ->where('room_id', $room_id)->get();
+        if($result){
+            return response()->json([
+                'success'   => true,
+                'data'   => [
+                    'id'        => $result->id,
+                    'room_id'      => $result->room_id,
+                    'room_name'   => $result->room->name,
+                    'type_id'      => $result->room->room_type_id,
+                    'room_type'     => $result->room->room_type->name,
+                    'room_capacity_id'   => $result->room->capacity_id,
+                    'room_capacity'     => $result->room->room_capacity->name,
+                    'date_start'     => $result->date_start,
+                    'date_end'     => $result->date_end,
+                    'availability'     => $result->availability
+                ]
+            ]);
+        }
+        
+        return response()->json([
+            'success'=> false,
+            'message'   => 'Failed to Update'
+        ]);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Hotels  $hotels

@@ -11972,7 +11972,7 @@ document.addEventListener('DOMContentLoaded', function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /var/www/hotelapp/clientapp/resources/js/admin/calendar.js */"./resources/js/admin/calendar.js");
+module.exports = __webpack_require__(/*! /var/www/nginx/hotelapp/clientapp/resources/js/admin/calendar.js */"./resources/js/admin/calendar.js");
 
 
 /***/ })

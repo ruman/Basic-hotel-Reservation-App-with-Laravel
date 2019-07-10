@@ -44,9 +44,6 @@
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('dashboard') }}">{{ __('Home') }}</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('hotels') }}">{{ __('Hotels') }}</a>
                         </li>
                         <li class="nav-item">
@@ -54,6 +51,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('bookings.index') }}">{{ __('Reservations') }}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('customers.index') }}">{{ __('Customers') }}</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>

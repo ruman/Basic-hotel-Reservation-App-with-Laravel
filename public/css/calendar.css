@@ -1322,3 +1322,17 @@ Docs & License: https://fullcalendar.io/
   border-color: transparent transparent #F8FAFC transparent;
 }
 
+.fc-view-container .fc-popover .fc-event {
+  display: block;
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 15px;
+  padding-right: 10px;
+}
+
+.fc-view-container .fc-popover .fc-event::before,
+.fc-view-container .fc-popover .fc-event::after {
+  display: none;
+}
+

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Customers;
+use App\Bookings;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use PragmaRX\Countries\Package\Countries;
+
+use Carbon\Carbon;
 
 use App\Http\Requests\CustomerManagerRequest;
 
@@ -28,14 +31,7 @@ class CustomerManagerController extends Controller
     {
         $customers = $this->customers->paginate($this->pagination);
         $countries = Countries::all()->pluck('name.common', 'postal');
-        // $states = Countries::where('cca3', 'USA')->first()->hydrateStates()->states->pluck('name', 'postal');
-        // $cities = Countries::where('cca3', 'USA')->first()->hydrate('cities')->cities->where('adm1name', 'New York')->pluck('name');
-        // dd($cities);
-        // $all = $countries->all();
-        /*foreach ($cities as $city) {
-            echo $city['name'].'<br/><br/>';
-        }*/
-        return view('admin.hotels.index')->with(compact('hotels','countries'));
+        return view('admin.customers.index')->with(compact('customers','countries'));
     }
 
     /**
@@ -76,9 +72,36 @@ class CustomerManagerController extends Controller
      * @param  \App\Customers  $customers
      * @return \Illuminate\Http\Response
      */
-    public function edit(Customers $customers)
+    public function edit(Request $request, $id)
     {
-        //
+        $result = Customers::find($id);
+        $bookings = Bookings::where('customer_id','=', $id)->get();
+        if($bookings->count()):
+            foreach ($bookings as &$booking) {
+                $booking->hotel = Bookings::find($booking->id)->hotel()->first()->name;
+                $booking->room = Bookings::find($booking->id)->room()->first()->name;
+                $booking->type = Bookings::find($booking->id)->room()->first()->room_type()->first()->name;
+                $booking->capacity = Bookings::find($booking->id)->room()->first()->room_capacity()->first()->name;
+                $booking->check_in = Carbon::parse($booking->check_in)->format('Y/m/d');
+                $booking->check_out = Carbon::parse($booking->check_out)->format('Y/m/d');
+                $booking->created = Carbon::parse($booking->updated_at)->format('Y/m/d h:m:s');
+            }
+        else:
+            $bookings = false;
+        endif;
+
+        if($result):
+            $result['bookings'] = $bookings;
+            return response()->json([
+                'success'   => true,
+                'customer'  => $result
+            ]);
+        else:
+            return response()->json([
+                'success'   => false,
+                'message'   => 'Information not Found!!!',
+            ]);
+        endif;
     }
 
     /**

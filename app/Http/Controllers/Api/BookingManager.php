@@ -54,9 +54,9 @@ class BookingManager extends Controller
 				            ->orWhereNull('date_end');
 				    })
     				// ->where('date_end', '>=', $data['to'])
-    				->whereIn('room_id',[1])
+    				// ->whereIn('room_id',[1])
     				->get();
-    		if($result){
+    		if($result->count()){
     			foreach ($result as &$hoteldata) {
     				$hoteldata->rate = $hoteldata->price->rate;
     				$hoteldata->hotel_name = $hoteldata->hotel->name;
@@ -119,8 +119,15 @@ class BookingManager extends Controller
             'email'  => $data['email'],
     	];
     	// dd($customerdata);
-    	$createcustomer = Customers::create($customerdata);
-    	if($createcustomer){
+        /*
+            Check Customer Exists or not with E-mail Address
+        */
+        $customer = Customers::where('email','=',$data['email'])->first();
+        if(!$customer){
+            $customer = Customers::create($customerdata);
+        }
+    	
+    	if($customer){
     		$checkin = Carbon::create($data['check_in']);
     		$checkout = Carbon::create($data['check_out']);
     		$reservationdata = [
@@ -128,7 +135,7 @@ class BookingManager extends Controller
     			'room_id'	=> $data['room_id'],
     			'check_in'	=> $checkin,
     			'check_out'	=> $checkout,
-    			'customer_id'	=> $createcustomer->id,
+    			'customer_id'	=> $customer->id,
     		];
     		$makereservation = Bookings::create($reservationdata);
     		if($makereservation){

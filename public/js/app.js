@@ -67414,6 +67414,8 @@ function (_React$Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this), "clearForm", function () {
+      console.log('hrer');
+
       _this.setState({
         toDate: '',
         fromDate: '',
@@ -67620,7 +67622,8 @@ function (_React$Component) {
         hotelId: hotel_id,
         roomId: room_id,
         checkIn: fromDate,
-        checkOut: toDate
+        checkOut: toDate,
+        clearForm: this.clearForm
       })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
         id: "clearForm",
         className: "hidden clearform",
@@ -67781,13 +67784,13 @@ function BookingForm(props) {
 
             if (_data.success) {
               alert(_data.message);
-              var elef = document.getElementById('clearForm');
-
-              if (typeof elef.click == 'function') {
-                elef.click();
-              } else if (typeof elef.onclick == 'function') {
-                elef.onclick();
-              }
+              props.clearForm();
+              /*var elef = document.getElementById('clearForm');
+              if(typeof elef.click == 'function') {
+                elef.click()
+              } else if(typeof elef.onclick == 'function') {
+                elef.onclick()
+              }*/
             } else {
               alert(_data.message);
             }
@@ -67952,10 +67955,10 @@ function BookingForm(props) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /var/www/hotelapp/clientapp/resources/js/app.js */"./resources/js/app.js");
-__webpack_require__(/*! /var/www/hotelapp/clientapp/resources/sass/app.scss */"./resources/sass/app.scss");
-__webpack_require__(/*! /var/www/hotelapp/clientapp/resources/sass/calendar.scss */"./resources/sass/calendar.scss");
-module.exports = __webpack_require__(/*! /var/www/hotelapp/clientapp/resources/sass/admin.scss */"./resources/sass/admin.scss");
+__webpack_require__(/*! /var/www/nginx/hotelapp/clientapp/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /var/www/nginx/hotelapp/clientapp/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /var/www/nginx/hotelapp/clientapp/resources/sass/calendar.scss */"./resources/sass/calendar.scss");
+module.exports = __webpack_require__(/*! /var/www/nginx/hotelapp/clientapp/resources/sass/admin.scss */"./resources/sass/admin.scss");
 
 
 /***/ })

@@ -191,6 +191,7 @@ class Frontend extends React.Component {
   }
 
   clearForm = () => {
+    console.log('hrer')
     this.setState({
       toDate: '',
       fromDate: '',
@@ -274,7 +275,7 @@ class Frontend extends React.Component {
             </div>
         </div>
         <Modal isOpen={this.state.modal} className={this.props.className} backdrop="static">
-          <BookingForm formstatus={this.formviewStatus} hotelId={hotel_id} roomId={room_id} checkIn={fromDate} checkOut={toDate} />
+          <BookingForm formstatus={this.formviewStatus} hotelId={hotel_id} roomId={room_id} checkIn={fromDate} checkOut={toDate} clearForm={this.clearForm} />
         </Modal>
         <button id="clearForm" className="hidden clearform" onClick={this.clearForm} />
       </div>

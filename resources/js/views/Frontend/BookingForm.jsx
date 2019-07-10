@@ -105,12 +105,13 @@ function BookingForm (props) {
             let data = response.data;
             if(data.success){
               alert(data.message);
-              var elef = document.getElementById('clearForm');
+              props.clearForm();
+              /*var elef = document.getElementById('clearForm');
               if(typeof elef.click == 'function') {
                 elef.click()
               } else if(typeof elef.onclick == 'function') {
                 elef.onclick()
-              }
+              }*/
             }else {
               alert(data.message);
             }

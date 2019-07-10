@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::get('hotels/{id}/rooms', 'HotelController@rooms')->name('hotel.rooms');
 		Route::post('hotels/{id}/rooms', 'HotelController@store_room');
+		Route::post('hotels/{id}/rooms/{room_id}', 'HotelController@update_room');
 
 		Route::get('rooms', 'RoomsController@index')->name('rooms');
 		Route::get('rooms/{id}/edit', 'RoomsController@edit')->name('room.edit');
@@ -55,6 +56,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('roomtypes', 'RoomTypesController', ['except' => ['show', 'delete']]);
 		Route::resource('roomprices', 'RoomPricesController', ['except' => ['show', 'delete']]);
 		Route::resource('bookings', 'BookingManagerController', ['except' => ['show', 'create','store']]);
+		Route::resource('customers', 'CustomerManagerController', ['except' => ['create','store']]);
 
 		Route::get('tmpls/{path?}', function(Request $request){
 			$path = $request->getPathInfo();

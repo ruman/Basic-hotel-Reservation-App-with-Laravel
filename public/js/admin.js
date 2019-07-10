@@ -36829,7 +36829,7 @@ if (token) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /var/www/hotelapp/clientapp/resources/js/admin/app.js */"./resources/js/admin/app.js");
+module.exports = __webpack_require__(/*! /var/www/nginx/hotelapp/clientapp/resources/js/admin/app.js */"./resources/js/admin/app.js");
 
 
 /***/ })
