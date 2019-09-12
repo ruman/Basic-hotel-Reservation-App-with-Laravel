@@ -56,7 +56,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::resource('roomtypes', 'RoomTypesController', ['except' => ['show', 'delete']]);
 		Route::resource('roomprices', 'RoomPricesController', ['except' => ['show', 'delete']]);
 		Route::resource('bookings', 'BookingManagerController', ['except' => ['show', 'create','store']]);
-		Route::resource('customers', 'CustomerManagerController', ['except' => ['create','store']]);
+		Route::resource('customers', 'CustomerManagerController', ['except' => ['create','store', 'delete']]);
 
 		Route::get('tmpls/{path?}', function(Request $request){
 			$path = $request->getPathInfo();

@@ -19,7 +19,8 @@ mix.react('resources/js/admin/calendar.js', 'public/js/admin/calendar.js')
 	.scripts([
     'resources/js/admin/jquery.dataTables.min.js',
     'resources/js/admin/dataTables.bootstrap4.min.js',
-    'resources/js/admin/jsrender.min.js'
+    'resources/js/admin/jsrender.min.js',
+    'resources/js/admin/popper.min.js'
 ], 'public/js/plugins.js')
 	.sass('resources/sass/calendar.scss', 'public/css')
 	.sass('resources/sass/admin.scss', 'public/css')

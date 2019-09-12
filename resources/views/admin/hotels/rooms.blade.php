@@ -492,8 +492,12 @@ jQuery(document).on('click', '.updateData', function(e){
                 let data = response.data;
                 let rowtmpl = $.templates('#datarowTpl'),
                     newdata = rowtmpl.render(data);
-                $("#roominfo-"+data.id).replaceWith(newdata);
+                <!-- $("#roominfo-"+data.id).replaceWith(newdata); -->
+
+                let tmpl = $.templates("#success"),
+                    html = tmpl.render(response);
                 $("#updatemessage").html(html).stop().show();
+                
             }else {
                 alert(response.message);
             }

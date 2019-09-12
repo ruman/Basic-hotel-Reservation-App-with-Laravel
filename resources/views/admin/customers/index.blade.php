@@ -59,9 +59,8 @@
                                         <td>{{ $customer->country }}</td>
                                         <td>
                                             <div class="clearfix tools">
-                                                <button type="button" class="btn btn-danger btn-sm deleteRow">{{__('Delete') }}</button>
-                                                <button type="button" class="btn btn-primary btn-sm mr-left-10 editRow">{{ __('Edit') }}</button>
-                                                <a href="javascript:void(0)" class="btn btn-success btn-sm mr-left-10 viewrow">{{__('View') }}</a>
+                                                <button type="button" class="btn btn-primary btn-sm mr-left-10 editRow" data-action="edit">{{ __('Edit') }}</button>
+                                                <a href="javascript:void(0)" class="btn btn-success btn-sm mr-left-10 viewRow" data-action="view">{{__('View') }}</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -107,13 +106,12 @@
 
 <script id="UpdaterowTemplate" type="text/x-jsrender">
     <tr id="customer-@{{:id}}" data-id="@{{:id}}">
-        <td>@{{:name}}</td>
+        <td>@{{:first_name}} @{{last_name}}</td>
         <td>@{{:email}}</td>
         <td>@{{:phone}}</td>
         <td>@{{:country}}</td>
         <td>
             <div class="clearfix tools">
-                <button type="button" class="btn btn-danger btn-sm deleteRow">Delete</button>
                 <button type="button" class="btn btn-primary btn-sm mr-left-10 editRow">Edit</button>
                 <a href="javascript:void(0)" class="btn btn-success btn-sm mr-left-10 viewRow">View</a>
             </div>
@@ -127,47 +125,74 @@
         @{{else}}
             <div class="col-sm-12">
         @{{/if}}
-            <form name="rowData"
-                @{{if id}} action="/admin/customers/@{{:id}}" onsubmit="return false;" @{{/if}}
-            >
-                <div class="form-group">
-                    <label for="first_name" class="control-label">First Name</label>
-                    <input id="first_name" type="text" name="first_name" class="form-control" value="@{{:first_name}}"" />
+            @{{if viewonly}}
+                <div class="row">
+                    <div class="col-sm-4"><strong>Name: </strong></div>
+                    <div class="col-sm-8">@{{:first_name}} @{{:last_name}}</div>
                 </div>
-                <div class="form-group">
-                    <label for="last_name" class="control-label">Last Name</label>
-                    <input id="last_name" type="text" name="last_name" class="form-control" value="@{{:last_name}}"" />
+                <div class="row">
+                    <div class="col-sm-4"><strong>E-Mail: </strong></div>
+                    <div class="col-sm-8">@{{:email}}</div>
                 </div>
-                <div class="form-group">
-                    <label for="email" class="control-label">Email</label>
-                    <input type="text" id="address" name="email" class="form-control" value="@{{:email}}" />
+                <div class="row">
+                    <div class="col-sm-4"><strong>Phone: </strong></div>
+                    <div class="col-sm-8">@{{:phone}}</div>
                 </div>
-                <div class="form-group">
-                    <label for="phone" class="control-label">Phone</label>
-                    <input type="text" id="phone" name="phone" class="form-control" value="@{{:phone}}" />
+                <div class="row">
+                    <div class="col-sm-4"><strong>Fax: </strong></div>
+                    <div class="col-sm-8">@{{:fax}}</div>
                 </div>
-                <div class="form-group">
-                    <label for="city" class="control-label">City</label>
-                    <input type="text" id="city" name="city" class="form-control" value="@{{:city}}" />
+                <div class="row">
+                    <div class="col-sm-4"><strong>City: </strong></div>
+                    <div class="col-sm-8">@{{:city}}</div>
                 </div>
-                <div class="form-group">
-                    <label for="country" class="control-label">Country</label>
-                    <select class="form-control" id="country" name="country">
-                        <option>{{ __("Please Select Country")}}</option>
-                        @foreach($countries as $country)
-                            <option value="{{$country}}"">{{$country}}</option>
-                        @endforeach
-                    </select>
+                <div class="row">
+                    <div class="col-sm-4"><strong>Country: </strong></div>
+                    <div class="col-sm-8">@{{:country}}</div>
                 </div>
-                <div id="updatemessage"></div>
-                <div class="form-group">
-                    @{{if id}}
-                        <button type="button" class="btn btn-primary updateHotel">Save</button>
-                    @{{else}}
-                        <button type="submit" class="btn btn-primary float-right">Create</button>
-                    @{{/if}}
-                </div>
-            </form>
+            @{{else}}
+                <form name="rowData"
+                    @{{if id}} action="/admin/customers/@{{:id}}" onsubmit="return false;" @{{/if}}
+                >
+                    <div class="form-group">
+                        <label for="first_name" class="control-label">First Name</label>
+                        <input id="first_name" type="text" name="first_name" class="form-control" value="@{{:first_name}}"" />
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name" class="control-label">Last Name</label>
+                        <input id="last_name" type="text" name="last_name" class="form-control" value="@{{:last_name}}"" />
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="control-label">Email</label>
+                        <input type="text" id="address" name="email" disabled class="form-control" value="@{{:email}}" />
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="control-label">Phone</label>
+                        <input type="text" id="phone" name="phone" class="form-control" value="@{{:phone}}" />
+                    </div>
+                    <div class="form-group">
+                        <label for="city" class="control-label">City</label>
+                        <input type="text" id="city" name="city" class="form-control" value="@{{:city}}" />
+                    </div>
+                    <div class="form-group">
+                        <label for="country" class="control-label">Country</label>
+                        <select class="form-control" id="country" name="country">
+                            <option>{{ __("Please Select Country")}}</option>
+                            @foreach($countries as $country)
+                                <option value="{{$country}}"">{{$country}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div id="updatemessage"></div>
+                    <div class="form-group">
+                        @{{if id}}
+                            <button type="button" class="btn btn-primary updateModal">Save</button>
+                        @{{else}}
+                            <button type="submit" class="btn btn-primary float-right">Create</button>
+                        @{{/if}}
+                    </div>
+                </form>
+            @{{/if}}
         </div>
         @{{if id}}
             <div class="col-sm-8">
@@ -234,7 +259,8 @@ $(document).ready(function() {
 
 jQuery(document).on('click', '.editRow', function(e){
     e.preventDefault();
-    let id = jQuery(this).closest('tr').data('id');
+    let v = jQuery(this),
+        id = v.closest('tr').data('id');
     jQuery.get('/admin/customers/'+id+'/edit', function(response){
         if(response.success){
             var tmpl = jQuery.templates("#rowTemplate"); 
@@ -244,24 +270,42 @@ jQuery(document).on('click', '.editRow', function(e){
             if(typeof(data.country) !=='undefined' || data.country !=''){
                 $("#country").val(data.country);
             }
-            $("#rowModal").modal('show');
+            $("#rowModal").modal('show', v);
+        }else {
+            alert(response.message);
         }
     });
-    return false;
+});
+
+jQuery(document).on('click', '.viewRow', function(e){
+    e.preventDefault();
+    let v = jQuery(this),
+        id = v.closest('tr').data('id');
+    jQuery.get('/admin/customers/'+id, function(response){
+        if(response.success){
+            var tmpl = jQuery.templates("#rowTemplate"); 
+            var data = response.customer;
+                data.viewonly = true;
+            var html = tmpl.render(data); 
+            $("#modalBody").html(html);
+            if(typeof(data.country) !=='undefined' || data.country !=''){
+                $("#country").val(data.country);
+            } 
+            $("#rowModal").modal('show', v);
+        }else {
+            alert(response.message);
+        }
+    });
 });
 
 $("#rowModal").on('show.bs.modal', function (event) {
     var v = $(event.relatedTarget);
-    if(v.data('create')){
-        var tmpl = jQuery.templates("#rowTemplate"); // Get compiled template
-        let data= {name:'', address:'', city:'', state:'', 'phone':'', 'email':''}
-        var html = tmpl.render(data); 
-        $("#modalBody").html(html);
+    if(v.data('action') == 'view'){
         var modal = $(this);
-        modal.find('.modal-title').text('Create New Hotel');
+        modal.find('.modal-title').text('Customer information');
     }else{
         var modal = $(this);
-        modal.find('.modal-title').text('Edit Hotel');
+        modal.find('.modal-title').text('Edit Customer information');
     }   
 });
 
@@ -303,54 +347,11 @@ jQuery(document).on('submit', '#uploadImage', function(e){
 });
 
 
-jQuery(document).on('submit', '#newHotelData', function(e){
-    e.preventDefault();
-    let form = $(this);
-    jQuery.ajax({
-        type:'POST',
-        url: $(this).attr('action'),
-        data:  new FormData(this),
-        contentType: false,
-        cache: false,
-        processData:false,
-        beforeSend: function(){
-            form.addClass('submitting');
-            $("#imagePreview").hide();
-        },
-        success: function(response){
-            if(response.success){
-                let data = response.data;
-                let rowtmpl = $.templates('#UpdaterowTemplate'),
-                    newdata = rowtmpl.render(data);
-                $("#listTable tbody").append(newdata);
-                $("#rowModal .modal-body").html('');
-                $("#rowModal").modal('hide');
-                alert('New Hotel Added');
-            }else {
-                alert(response.message);
-            }
-            form.removeClass('submitting');
-        }, 
-        error: function(error){
-            form.removeClass('submitting');
-            if(error.responseText){
-                let response = JSON.parse(error.responseText);
-                let tmpl = jQuery.templates("#errors");
-                let html = tmpl.render(response);
-                $("#updatemessage").html(html).stop().show();                
-            }else {
-                alert(error.message);
-            }
-        }
-    });
-});
-
-
-jQuery(document).on('click', '.updateHotel', function(e){
+jQuery(document).on('click', '.updateModal', function(e){
     e.preventDefault();
     let form = $(this).closest('form');
     jQuery.ajax({
-        type:'POST',
+        type:'PUT',
         url: form.attr('action'),
         data:  form.serialize(),
         beforeSend: function(){
@@ -364,7 +365,7 @@ jQuery(document).on('click', '.updateHotel', function(e){
                     html = tmpl.render(response);
                 $("#updatemessage").html(html).stop().show();
                 let data = response.data;
-                let $row = $("#hoteinfo-"+data.id),
+                let $row = $("#customer-"+data.id),
                     rowtmpl = $.templates('#UpdaterowTemplate'),
                     newdata = rowtmpl.render(data);
 

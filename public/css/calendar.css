@@ -1298,7 +1298,7 @@ Docs & License: https://fullcalendar.io/
   border: none !important;
 }
 
-.fc-view-container .fc-event::before {
+.fc-view-container .fc-event:not(.fc-not-start)::before {
   content: "";
   position: absolute;
   top: 0;
@@ -1310,7 +1310,7 @@ Docs & License: https://fullcalendar.io/
   border-color: #F8FAFC transparent transparent transparent;
 }
 
-.fc-view-container .fc-event::after {
+.fc-view-container .fc-event:not(.fc-not-end)::after {
   content: "";
   position: absolute;
   bottom: 0;

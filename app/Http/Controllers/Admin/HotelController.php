@@ -7,12 +7,15 @@ use App\Http\Controllers\Controller;
 use PragmaRX\Countries\Package\Countries;
 
 use App\Http\Requests\HotelCreateRequest;
+use App\Http\Requests\HotelRoomCreateRequest;
 use App\Http\Requests\HotelImageUploadRequest;
 
 use App\Hotels;
 use App\Rooms;
 use App\RoomPrices;
 use App\HotelData;
+
+use Carbon\Carbon;
 
 class HotelController extends Controller
 {
@@ -185,19 +188,24 @@ class HotelController extends Controller
      * @param  \App\Hotels  $hotels
      * @return \Illuminate\Http\Response
      */
-    public function update_room(HotelCreateRequest $request, $id, $room_id)
+    public function update_room(HotelRoomCreateRequest $request, $id, $room_id)
     {
         $payload = $request->except('_token');
+        $payload['date_start'] = ($payload['date_start']) ? Carbon::create($payload['date_start'])->format('Y-m-d h:m:s') : null;
+        $payload['date_end'] = ($payload['date_end']) ? Carbon::create($payload['date_end'])->format('Y-m-d h:m:s') : null;
+        // dd($payload);
         $result = $this->hoteldata
                     ->where('hotel_id', $id)
                     ->where('room_id', $room_id)
                     ->update($payload);
         $result = $this->hoteldata
                     ->where('hotel_id', $id)
-                    ->where('room_id', $room_id)->get();
+                    ->where('room_id', $room_id)->first();
+        // dd($result->id);
         if($result){
             return response()->json([
                 'success'   => true,
+                'message'   => 'Room Updated Successfully.',
                 'data'   => [
                     'id'        => $result->id,
                     'room_id'      => $result->room_id,

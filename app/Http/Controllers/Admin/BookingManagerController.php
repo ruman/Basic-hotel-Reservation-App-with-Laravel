@@ -136,7 +136,7 @@ class BookingManagerController extends Controller
                         'end'       => Carbon::create($booking->check_out)->format('Y-m-d h:m:s'),
                         'hotel'    => $booking->hotel->name,
                         'room'          => $booking->room->name,
-                        'rate'          => $booking->hoteldata->price->rate,
+                        // 'rate'          => $booking->hoteldata->price->rate,
                         /*'start'     => $booking->check_in,
                         'end'       => $booking->check_out,*/
                     ];
