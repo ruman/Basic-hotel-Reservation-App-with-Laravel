@@ -1,8 +1,3 @@
-# 21615. Test Assignment for Laravel _ Frontend 
-
-https://app.codeline.io/#/projects/1969/tasks/21615
-
-
 Laravel Booking Application
 ==========================================
 
@@ -47,8 +42,6 @@ http://localhost:8080
 This application is now fully-functional but still have some points which will need to update and they are:
 
 - Create Backend Manager for Room Prices
-- Create Backend Manager for Bookings
-- Create Backend Manager for Customers
 - Cleanup codes [mainly remove the un-used react packages]
 
 
